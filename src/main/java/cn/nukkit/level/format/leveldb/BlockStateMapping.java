@@ -149,6 +149,13 @@ public class BlockStateMapping {
         return this.getState(runtimeId);
     }
 
+    /**
+     * @return the state of the runtime id, null when there is none
+     */
+    BlockStateSnapshot peekState(int runtimeId) {
+        return this.runtime2State.get(runtimeId);
+    }
+
     public BlockStateSnapshot getState(int runtimeId) {
         BlockStateSnapshot state = this.runtime2State.get(runtimeId);
         if (state == null) {
