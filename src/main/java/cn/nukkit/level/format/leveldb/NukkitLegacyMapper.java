@@ -2,6 +2,7 @@ package cn.nukkit.level.format.leveldb;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.level.GlobalBlockPalette;
+import cn.nukkit.level.format.leveldb.structure.BlockStateSnapshot;
 import org.cloudburstmc.nbt.NbtMap;
 import org.cloudburstmc.nbt.NbtMapBuilder;
 import org.cloudburstmc.nbt.NbtType;
@@ -9,6 +10,8 @@ import org.cloudburstmc.nbt.NbtUtils;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NukkitLegacyMapper implements LegacyStateMapper {
 
@@ -44,7 +47,50 @@ public class NukkitLegacyMapper implements LegacyStateMapper {
 
     @Override
     public int runtimeToFullId(int runtimeId) {
-        return GlobalBlockPalette.getLeveldbBlockPalette().getLegacyFullId(runtimeId);
+        int fullId = GlobalBlockPalette.getLeveldbBlockPalette().getLegacyFullId(runtimeId);
+        return fullId != -1 ? fullId : doorFullId(runtimeId);
+    }
+
+    private static final Map<String, Integer> DOOR_IDS = new ConcurrentHashMap<>();
+
+    /**
+     * The shipped palette has no legacy block for part of the door states, for example the top half of a door that
+     * faces south, so the door was loaded as the default block and showed up as a missing block. The door halves
+     * are given the data the game gives them itself: the facing and the open bit for the bottom half, the
+     * hinge for the top half.
+     */
+    private static int doorFullId(int runtimeId) {
+        BlockStateSnapshot snapshot = BlockStateMapping.get().peekState(runtimeId);
+        if (snapshot == null) {
+            return -1;
+        }
+
+        NbtMap vanilla = snapshot.getVanillaState();
+        String name = vanilla.getString("name");
+        NbtMap states = vanilla.getCompound("states");
+        if (!name.endsWith("_door") || !states.containsKey("direction") || !states.containsKey("upper_block_bit")) {
+            return -1;
+        }
+
+        Integer id = DOOR_IDS.computeIfAbsent(name, key -> {
+            NbtMapBuilder base = states.toBuilder();
+            base.putInt("direction", 0);
+            base.putByte("door_hinge_bit", (byte) 0);
+            base.putByte("open_bit", (byte) 0);
+            base.putByte("upper_block_bit", (byte) 0);
+            BlockStateSnapshot lower = BlockStateMapping.get().getStateUnsafe(vanilla.toBuilder().putCompound("states", base.build()).build());
+            int baseFullId = lower == null ? -1 : GlobalBlockPalette.getLeveldbBlockPalette().getLegacyFullId(lower.getRuntimeId());
+            return baseFullId == -1 ? -1 : baseFullId >> Block.DATA_BITS;
+        });
+        if (id == -1) {
+            return -1;
+        }
+
+        boolean top = states.getByte("upper_block_bit") != 0;
+        int data = top
+                ? 0x08 | (states.getByte("door_hinge_bit") != 0 ? 0x01 : 0)
+                : (states.getInt("direction") & 0x03) | (states.getByte("open_bit") != 0 ? 0x04 : 0);
+        return id << Block.DATA_BITS | data;
     }
 
     @Override
