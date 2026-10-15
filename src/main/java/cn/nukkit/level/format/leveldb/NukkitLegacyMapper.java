@@ -48,10 +48,45 @@ public class NukkitLegacyMapper implements LegacyStateMapper {
     @Override
     public int runtimeToFullId(int runtimeId) {
         int fullId = GlobalBlockPalette.getLeveldbBlockPalette().getLegacyFullId(runtimeId);
-        return fullId != -1 ? fullId : doorFullId(runtimeId);
+        if (fullId == -1) {
+            fullId = doorFullId(runtimeId);
+        }
+        return fullId != -1 ? fullId : siblingFullId(runtimeId);
     }
 
     private static final Map<String, Integer> DOOR_IDS = new ConcurrentHashMap<>();
+    private static volatile Map<String, Integer> idsByName;
+
+    /**
+     * Other states of the shipped palette have no legacy block either, for example a sideways wood block. They
+     * are given the block of a state of the same name, with the data of the default state, so that a wood block
+     * of the right kind is loaded instead of the default block of the palette.
+     */
+    private static int siblingFullId(int runtimeId) {
+        BlockStateSnapshot snapshot = BlockStateMapping.get().peekState(runtimeId);
+        if (snapshot == null) {
+            return -1;
+        }
+
+        Integer id = getIdsByName().get(snapshot.getVanillaState().getString("name"));
+        return id == null ? -1 : id << Block.DATA_BITS;
+    }
+
+    private static Map<String, Integer> getIdsByName() {
+        Map<String, Integer> ids = idsByName;
+        if (ids == null) {
+            ids = new ConcurrentHashMap<>();
+            for (int runtimeId : BlockStateMapping.get().getRuntimeIds()) {
+                int fullId = GlobalBlockPalette.getLeveldbBlockPalette().getLegacyFullId(runtimeId);
+                BlockStateSnapshot snapshot = BlockStateMapping.get().peekState(runtimeId);
+                if (fullId != -1 && snapshot != null) {
+                    ids.putIfAbsent(snapshot.getVanillaState().getString("name"), fullId >> Block.DATA_BITS);
+                }
+            }
+            idsByName = ids;
+        }
+        return ids;
+    }
 
     /**
      * The shipped palette has no legacy block for part of the door states, for example the top half of a door that
