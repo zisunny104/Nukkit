@@ -277,7 +277,7 @@ public class BinaryStream {
     public void putSkin(Skin skin) {
         this.putString(skin.getSkinId());
 
-        this.putString(skin.getPlayFabId());
+        // the PlayFab id is not part of the skin any more since 1.26.60, the player list carries it
 
         this.putString(skin.getSkinResourcePatch());
         this.putImage(skin.getSkinData());
@@ -364,8 +364,6 @@ public class BinaryStream {
     public Skin getSkin() {
         Skin skin = new Skin();
         skin.setSkinId(this.getString());
-
-        skin.setPlayFabId(this.getString());
 
         skin.setSkinResourcePatch(this.getString());
         skin.setSkinData(this.getImage());
