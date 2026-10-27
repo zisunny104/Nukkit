@@ -207,7 +207,7 @@ public class AddEntityPacket extends DataPacket {
         for (EntityLink link : links) {
             putEntityLink(link);
         }
-        this.putBoolean(false); // PassengerBlockData not present
+        this.putBoolean(false); // passengerOfBlockArguments (optional)
     }
 
     private String getEntityIdentifier() {
