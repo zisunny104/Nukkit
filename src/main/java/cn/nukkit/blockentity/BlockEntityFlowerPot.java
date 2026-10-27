@@ -2,6 +2,7 @@ package cn.nukkit.blockentity;
 
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
+import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -61,8 +62,14 @@ public class BlockEntityFlowerPot extends BlockEntitySpawnable {
             if (HAS_STRING_ITEM_OVERRIDE.containsKey(item)) {
                 tag.putCompound("PlantBlock", new CompoundTag().putString("name", HAS_STRING_ITEM_OVERRIDE.get(item)));
             } else {
-                tag.putShort("item", this.namedTag.getShort("item"))
-                        .putInt("mData", this.namedTag.getInt("data"));
+                // Current clients read the plant as a block state; the numeric item and data are not understood by them
+                CompoundTag state = GlobalBlockPalette.getCurrentBlockPalette().getState(item, this.namedTag.getInt("data"));
+                if (state != null) {
+                    tag.putCompound("PlantBlock", state);
+                } else {
+                    tag.putShort("item", this.namedTag.getShort("item"))
+                            .putInt("mData", this.namedTag.getInt("data"));
+                }
             }
         }
         return tag;
