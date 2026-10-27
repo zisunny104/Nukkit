@@ -29,6 +29,7 @@ public class AnimatePacket extends DataPacket {
         if (this.getBoolean()) {
             this.getString(); // Swing source
         }
+        this.getByte(); // hand
     }
 
     @Override
@@ -38,6 +39,7 @@ public class AnimatePacket extends DataPacket {
         this.putEntityRuntimeId(this.eid);
         this.putLFloat(this.data);
         this.putBoolean(false); // Swing source (optional)
+        this.putByte((byte) 0); // hand: main hand
     }
 
     @Override
