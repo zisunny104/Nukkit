@@ -44,7 +44,8 @@ public class BlockEntityLectern extends BlockEntitySpawnable {
 
         Item book = getBook();
         if (book.getId() != BlockID.AIR) {
-            c.putCompound("book", NBTIO.putItemHelper(book));
+            // The client reads the book by its name; the legacy numeric id alone is not understood by current clients
+            c.putCompound("book", NBTIO.putNetworkItemHelper(book));
             c.putBoolean("hasBook", true);
             c.putInt("page", getRawPage());
             c.putInt("totalPages", totalPages);
