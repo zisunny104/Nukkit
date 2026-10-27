@@ -8,6 +8,7 @@ import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.RuntimeItems;
 import cn.nukkit.level.GameRule;
+import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -129,6 +130,16 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
                 item.getCompound("tag").remove("Colors");
             } else {
                 item.getCompound("tag").remove("Items");
+            }
+
+            // Current clients need the block state of a block item next to its name, as the item is read like a block
+            Item held = Item.get(itemId, itemOriginal.getShort("Damage"));
+            if (held instanceof ItemBlock) {
+                Block block = held.getBlock();
+                CompoundTag state = GlobalBlockPalette.getCurrentBlockPalette().getState(block.getId(), block.getDamage());
+                if (state != null) {
+                    item.putCompound("Block", state);
+                }
             }
 
             tag.putCompound("Item", item)
