@@ -34,6 +34,9 @@ public class DimensionDataPacket extends DataPacket {
             this.putVarInt(definition.getDimensionType());
             this.putUUID(definition.getPackId());
             this.putString(definition.getDefaultBiome());
+            boolean overworld = "minecraft:overworld".equals(definition.getId());
+            this.putVarInt(overworld ? 192 : 0); // cloudHeight
+            this.putBoolean(overworld); // renderClouds
         }
     }
 }

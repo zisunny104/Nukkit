@@ -57,5 +57,6 @@ public class LevelChunkPacket extends DataPacket {
             this.putLLong(blobId);
         }
         this.putByteArray(this.data);
+        this.putBoolean(false); // clientBiomeUpdate
     }
 }
