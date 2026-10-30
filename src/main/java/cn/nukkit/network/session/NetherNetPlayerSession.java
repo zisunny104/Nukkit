@@ -55,7 +55,7 @@ public class NetherNetPlayerSession extends SimpleChannelInboundHandler<Object> 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        this.disconnect("Channel Inactive");
+        this.disconnect(Server.getInstance().getLanguage().translateString("disconnectionScreen.disconnected"));
     }
 
     @Override
