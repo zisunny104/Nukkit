@@ -277,8 +277,6 @@ public class BinaryStream {
     public void putSkin(Skin skin) {
         this.putString(skin.getSkinId());
 
-        // the PlayFab id is not part of the skin any more since 1.26.60, the player list carries it
-
         this.putString(skin.getSkinResourcePatch());
         this.putImage(skin.getSkinData());
 
