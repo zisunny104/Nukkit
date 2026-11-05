@@ -18,7 +18,10 @@ public class CommandData implements Cloneable {
     @Override
     public CommandData clone() {
         try {
-            return (CommandData) super.clone();
+            CommandData copy = (CommandData) super.clone();
+            // Each command packet must keep its own overloads while it is encoded.
+            copy.overloads = new HashMap<>(this.overloads);
+            return copy;
         } catch (Exception e) {
             return new CommandData();
         }
