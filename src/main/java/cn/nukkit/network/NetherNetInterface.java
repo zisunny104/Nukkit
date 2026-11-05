@@ -101,6 +101,20 @@ public class NetherNetInterface implements AdvancedSourceInterface {
                                 .build();
                     });
 
+            // HTTPS signaling on the same port: players that connect by the certificate's name get no trust prompt
+            String httpsCert = server.getPropertyString("nethernet-https-cert", "");
+            String httpsKey = server.getPropertyString("nethernet-https-key", "");
+            if (!httpsCert.isBlank() && !httpsKey.isBlank()) {
+                signallingBuilder.setHttpsPem(new File(httpsCert), new File(httpsKey));
+                log.info("NetherNet signaling serves HTTPS with the certificate {}", httpsCert);
+            }
+
+            // Behind a reverse proxy the client address is read from X-Forwarded-For, but only from these proxies
+            String trustedProxies = server.getPropertyString("nethernet-trusted-proxies", "");
+            if (!trustedProxies.isBlank()) {
+                signallingBuilder.setForwardedForProxies(Arrays.asList(trustedProxies.split(",")));
+            }
+
             this.netherNetSignaling = signallingBuilder.build();
 
             this.eventLoopGroup = new NioEventLoopGroup();
@@ -132,7 +146,7 @@ public class NetherNetInterface implements AdvancedSourceInterface {
 
             this.netherNetChannel = bootstrap.bind(new InetSocketAddress(address, server.getPort())).sync().channel();
 
-            server.getLogger().info("NetherNet signaling started on http://" + address + ":" + server.getPort() + " (WebRTC on port " + webrtcPort + "/udp)");
+            server.getLogger().info("NetherNet signaling started on " + (httpsCert.isBlank() || httpsKey.isBlank() ? "http" : "https") + "://" + address + ":" + server.getPort() + " (WebRTC on port " + webrtcPort + "/udp)");
         } catch (Exception e) {
             server.getLogger().error("Failed to start NetherNet", e);
         }
