@@ -802,6 +802,9 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         if (!data.isEmpty()) {
             pk.commands = data;
+            // Encode here: the command data is shared with the plugins, so it must not be read on the network thread
+            // while a reload replaces it (that made the enum lookup fail and the session tick throw).
+            pk.tryEncode();
             this.dataPacket(pk);
         }
     }
