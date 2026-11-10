@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockGoldenDandelion extends BlockFlowable {
+public class BlockGoldenDandelion extends BlockGroundPlant {
 
     public BlockGoldenDandelion() {
         this(0);

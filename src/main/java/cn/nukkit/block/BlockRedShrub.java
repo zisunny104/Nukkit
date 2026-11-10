@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockRedShrub extends BlockFlowable {
+public class BlockRedShrub extends BlockGroundPlant {
 
     public BlockRedShrub() {
         this(0);

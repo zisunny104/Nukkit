@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockBush extends BlockFlowable {
+public class BlockBush extends BlockGroundPlant {
 
     public BlockBush() {
         this(0);

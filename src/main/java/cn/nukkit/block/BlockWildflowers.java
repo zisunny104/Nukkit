@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockWildflowers extends BlockFlowable {
+public class BlockWildflowers extends BlockPinkPetals {
 
     public BlockWildflowers() {
         this(0);

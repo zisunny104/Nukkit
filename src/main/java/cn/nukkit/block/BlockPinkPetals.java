@@ -31,7 +31,7 @@ public class BlockPinkPetals extends BlockFlowable {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        if (target.getId() == PINK_PETALS && face == BlockFace.UP) {
+        if (target.getId() == this.getId() && face == BlockFace.UP) {
             int damage = target.getDamage();
             int growth = (damage & GROWTH_MASK) >> 2;
             if (growth < 3) {
@@ -43,15 +43,18 @@ public class BlockPinkPetals extends BlockFlowable {
             return false;
         }
 
-        Block down = this.down();
-        int id = down.getId();
-        if (id == Block.GRASS || id == Block.DIRT || id == Block.FARMLAND || id == Block.PODZOL || id == MYCELIUM || id == MOSS_BLOCK || id == MUD || id == MUDDY_MANGROVE_ROOTS) {
+        if (this.canStandOn(this.down())) {
             int direction = player != null ? player.getDirection().getOpposite().getHorizontalIndex() : 0;
             this.setDamage(direction & DIRECTION_MASK);
             this.getLevel().setBlock(this, this, true, true);
             return true;
         }
         return false;
+    }
+
+    protected boolean canStandOn(Block down) {
+        int id = down.getId();
+        return id == Block.GRASS || id == Block.DIRT || id == Block.FARMLAND || id == Block.PODZOL || id == MYCELIUM || id == MOSS_BLOCK || id == MUD || id == MUDDY_MANGROVE_ROOTS;
     }
 
     @Override
