@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockWaxedExposedCopperChest extends BlockTransparentMeta {
+public class BlockWaxedExposedCopperChest extends BlockChest {
 
     public BlockWaxedExposedCopperChest() {
         this(0);
@@ -18,5 +18,10 @@ public class BlockWaxedExposedCopperChest extends BlockTransparentMeta {
     @Override
     public String getName() {
         return "Waxed Exposed Copper Chest";
+    }
+
+    @Override
+    protected boolean canPairWith(Block other) {
+        return other.getId() == this.getId();
     }
 }
