@@ -41,9 +41,7 @@ public class ChunkSerializers {
         if (version < 3) {
             throw new IllegalArgumentException("Invalid chunk serializer version " + version + "! Serializers down to 1.0.0 (version 3) are supported");
         }
-        if (version > 40) {
-            throw new IllegalArgumentException("Invalid chunk serializer version " + version + "! Serializers up to 1.21.30 (version 40) are supported");
-        }
+        // Newer versions (41+, 1.21.40 and later) keep the same layout as V3; refusing them made the chunk get replaced by an empty one
         return ChunkSerializerV3.INSTANCE;
     }
 
