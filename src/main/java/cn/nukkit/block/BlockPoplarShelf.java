@@ -1,0 +1,22 @@
+package cn.nukkit.block;
+
+public class BlockPoplarShelf extends BlockTransparentMeta {
+
+    public BlockPoplarShelf() {
+        this(0);
+    }
+
+    public BlockPoplarShelf(int meta) {
+        super(meta);
+    }
+
+    @Override
+    public int getId() {
+        return POPLAR_SHELF;
+    }
+
+    @Override
+    public String getName() {
+        return "Poplar Shelf";
+    }
+}
