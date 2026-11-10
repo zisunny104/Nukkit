@@ -986,6 +986,30 @@ public class BlockTypes {
     public static final BlockType BLACK_WOOL_SLAB = register("minecraft:black_wool_slab", BlockID.BLACK_WOOL_SLAB);
     public static final BlockType BLACK_WOOL_DOUBLE_SLAB = register("minecraft:black_wool_double_slab", BlockID.BLACK_WOOL_DOUBLE_SLAB);
     public static final BlockType BLACK_WOOL_STAIRS = register("minecraft:black_wool_stairs", BlockID.BLACK_WOOL_STAIRS);
+    public static final BlockType COPPER_BARS = register("minecraft:copper_bars", BlockID.COPPER_BARS);
+    public static final BlockType COPPER_LANTERN = register("minecraft:copper_lantern", BlockID.COPPER_LANTERN);
+    public static final BlockType EXPOSED_COPPER_BARS = register("minecraft:exposed_copper_bars", BlockID.EXPOSED_COPPER_BARS);
+    public static final BlockType EXPOSED_COPPER_LANTERN = register("minecraft:exposed_copper_lantern", BlockID.EXPOSED_COPPER_LANTERN);
+    public static final BlockType WEATHERED_COPPER_BARS = register("minecraft:weathered_copper_bars", BlockID.WEATHERED_COPPER_BARS);
+    public static final BlockType WEATHERED_COPPER_LANTERN = register("minecraft:weathered_copper_lantern", BlockID.WEATHERED_COPPER_LANTERN);
+    public static final BlockType OXIDIZED_COPPER_BARS = register("minecraft:oxidized_copper_bars", BlockID.OXIDIZED_COPPER_BARS);
+    public static final BlockType OXIDIZED_COPPER_LANTERN = register("minecraft:oxidized_copper_lantern", BlockID.OXIDIZED_COPPER_LANTERN);
+    public static final BlockType WAXED_COPPER_BARS = register("minecraft:waxed_copper_bars", BlockID.WAXED_COPPER_BARS);
+    public static final BlockType WAXED_COPPER_LANTERN = register("minecraft:waxed_copper_lantern", BlockID.WAXED_COPPER_LANTERN);
+    public static final BlockType WAXED_EXPOSED_COPPER_BARS = register("minecraft:waxed_exposed_copper_bars", BlockID.WAXED_EXPOSED_COPPER_BARS);
+    public static final BlockType WAXED_EXPOSED_COPPER_LANTERN = register("minecraft:waxed_exposed_copper_lantern", BlockID.WAXED_EXPOSED_COPPER_LANTERN);
+    public static final BlockType WAXED_WEATHERED_COPPER_BARS = register("minecraft:waxed_weathered_copper_bars", BlockID.WAXED_WEATHERED_COPPER_BARS);
+    public static final BlockType WAXED_WEATHERED_COPPER_LANTERN = register("minecraft:waxed_weathered_copper_lantern", BlockID.WAXED_WEATHERED_COPPER_LANTERN);
+    public static final BlockType WAXED_OXIDIZED_COPPER_BARS = register("minecraft:waxed_oxidized_copper_bars", BlockID.WAXED_OXIDIZED_COPPER_BARS);
+    public static final BlockType WAXED_OXIDIZED_COPPER_LANTERN = register("minecraft:waxed_oxidized_copper_lantern", BlockID.WAXED_OXIDIZED_COPPER_LANTERN);
+    public static final BlockType EXPOSED_LIGHTNING_ROD = register("minecraft:exposed_lightning_rod", BlockID.EXPOSED_LIGHTNING_ROD);
+    public static final BlockType WEATHERED_LIGHTNING_ROD = register("minecraft:weathered_lightning_rod", BlockID.WEATHERED_LIGHTNING_ROD);
+    public static final BlockType OXIDIZED_LIGHTNING_ROD = register("minecraft:oxidized_lightning_rod", BlockID.OXIDIZED_LIGHTNING_ROD);
+    public static final BlockType WAXED_LIGHTNING_ROD = register("minecraft:waxed_lightning_rod", BlockID.WAXED_LIGHTNING_ROD);
+    public static final BlockType WAXED_EXPOSED_LIGHTNING_ROD = register("minecraft:waxed_exposed_lightning_rod", BlockID.WAXED_EXPOSED_LIGHTNING_ROD);
+    public static final BlockType WAXED_WEATHERED_LIGHTNING_ROD = register("minecraft:waxed_weathered_lightning_rod", BlockID.WAXED_WEATHERED_LIGHTNING_ROD);
+    public static final BlockType WAXED_OXIDIZED_LIGHTNING_ROD = register("minecraft:waxed_oxidized_lightning_rod", BlockID.WAXED_OXIDIZED_LIGHTNING_ROD);
+    public static final BlockType COPPER_TORCH = register("minecraft:copper_torch", BlockID.COPPER_TORCH);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));
