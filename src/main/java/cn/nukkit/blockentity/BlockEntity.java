@@ -43,6 +43,7 @@ public abstract class BlockEntity extends Position {
     public static final String CREAKING_HEART = "CreakingHeart";
     public static final String DAYLIGHT_DETECTOR = "DaylightDetector";
     public static final String DECORATED_POT = "DecoratedPot";
+    public static final String COPPER_GOLEM_STATUE = "CopperGolemStatue";
     public static final String DISPENSER = "Dispenser";
     public static final String DROPPER = "Dropper";
     public static final String ENCHANT_TABLE = "EnchantTable";
