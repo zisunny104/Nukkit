@@ -7,7 +7,7 @@ public class BlockPaleHangingMoss extends BlockRoots {
     }
 
     public BlockPaleHangingMoss(int meta) {
-        super(0); // hanging roots have no variants
+        super(meta);
     }
 
     @Override
