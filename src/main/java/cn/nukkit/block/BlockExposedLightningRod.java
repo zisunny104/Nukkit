@@ -6,7 +6,7 @@ import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.math.BlockFace;
 
-public class BlockExposedLightningRod extends BlockTransparentMeta {
+public class BlockExposedLightningRod extends BlockTransparentMeta implements CopperFamily {
 
     private static final int[] FACES = {0, 1, 2, 3, 4, 5};
 
@@ -89,5 +89,26 @@ public class BlockExposedLightningRod extends BlockTransparentMeta {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public int[] getFamilyIds() {
+        return CopperFamilies.LIGHTNING_ROD;
+    }
+
+    @Override
+    public boolean canBeActivated() {
+        return true;
+    }
+
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        return CopperFamily.super.onActivate(item, player) || super.onActivate(item, player);
+    }
+
+    @Override
+    public int onUpdate(int type) {
+        int result = CopperFamily.super.onUpdate(type);
+        return result != 0 ? result : super.onUpdate(type);
     }
 }

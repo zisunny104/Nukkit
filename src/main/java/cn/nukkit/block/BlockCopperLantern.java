@@ -9,7 +9,7 @@ import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 
-public class BlockCopperLantern extends BlockFlowable {
+public class BlockCopperLantern extends BlockFlowable implements CopperFamily {
 
     public BlockCopperLantern() {
         this(0);
@@ -141,8 +141,7 @@ public class BlockCopperLantern extends BlockFlowable {
         return true;
     }
 
-    @Override
-    public int onUpdate(int type) {
+    private int onLanternUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
             if (this.getDamage() == 0) {
                 if (!this.isBlockUnderValid()) {
@@ -159,5 +158,26 @@ public class BlockCopperLantern extends BlockFlowable {
     @Override
     public boolean canHarvestWithHand() {
         return false;
+    }
+
+    @Override
+    public int[] getFamilyIds() {
+        return CopperFamilies.LANTERN;
+    }
+
+    @Override
+    public boolean canBeActivated() {
+        return true;
+    }
+
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        return CopperFamily.super.onActivate(item, player) || super.onActivate(item, player);
+    }
+
+    @Override
+    public int onUpdate(int type) {
+        int result = CopperFamily.super.onUpdate(type);
+        return result != 0 ? result : this.onLanternUpdate(type);
     }
 }
