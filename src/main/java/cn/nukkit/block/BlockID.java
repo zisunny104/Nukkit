@@ -1027,4 +1027,6 @@ public interface BlockID {
     int WAXED_OXIDIZED_LIGHTNING_ROD = 1261;
     int COPPER_TORCH = 1262;
     int PALE_MOSS_BLOCK = 1263;
+    int PALE_MOSS_CARPET = 1264;
+    int PALE_HANGING_MOSS = 1265;
 }
