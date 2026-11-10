@@ -1809,6 +1809,9 @@ public abstract class Entity extends Location implements Metadatable {
             }
         }
 
+        // The client only sits down when it gets the link; the riding flag alone is not enough
+        broadcastLinkPacket(entity, mode);
+
         // Add variables to entity
         entity.riding = this;
         entity.setDataFlag(DATA_FLAGS, DATA_FLAG_RIDING, true);
@@ -1872,6 +1875,7 @@ public abstract class Entity extends Location implements Metadatable {
         pk.vehicleUniqueId = id;     // To the?
         pk.riderUniqueId = rider.id; // From who?
         pk.type = type;
+        pk.riderInitiated = rider instanceof Player; // The official server marks the links of players like this
 
         Server.broadcastPacket(this.hasSpawned.values(), pk);
     }
