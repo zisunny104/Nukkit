@@ -832,6 +832,26 @@ public class BlockTypes {
     public static final BlockType PALE_OAK_WALL_SIGN = register("minecraft:pale_oak_wall_sign", BlockID.PALE_OAK_WALL_SIGN);
     public static final BlockType PALE_OAK_LEAVES = register("minecraft:pale_oak_leaves", BlockID.PALE_OAK_LEAVES);
     public static final BlockType PALE_OAK_SAPLING = register("minecraft:pale_oak_sapling", BlockID.PALE_OAK_SAPLING);
+    public static final BlockType POPLAR_PLANKS = register("minecraft:poplar_planks", BlockID.POPLAR_PLANKS);
+    public static final BlockType POPLAR_LOG = register("minecraft:poplar_log", BlockID.POPLAR_LOG);
+    public static final BlockType POPLAR_WOOD = register("minecraft:poplar_wood", BlockID.POPLAR_WOOD);
+    public static final BlockType STRIPPED_POPLAR_LOG = register("minecraft:stripped_poplar_log", BlockID.STRIPPED_POPLAR_LOG);
+    public static final BlockType STRIPPED_POPLAR_WOOD = register("minecraft:stripped_poplar_wood", BlockID.STRIPPED_POPLAR_WOOD);
+    public static final BlockType POPLAR_STAIRS = register("minecraft:poplar_stairs", BlockID.POPLAR_STAIRS);
+    public static final BlockType POPLAR_SLAB = register("minecraft:poplar_slab", BlockID.POPLAR_SLAB);
+    public static final BlockType POPLAR_DOUBLE_SLAB = register("minecraft:poplar_double_slab", BlockID.POPLAR_DOUBLE_SLAB);
+    public static final BlockType POPLAR_FENCE = register("minecraft:poplar_fence", BlockID.POPLAR_FENCE);
+    public static final BlockType POPLAR_FENCE_GATE = register("minecraft:poplar_fence_gate", BlockID.POPLAR_FENCE_GATE);
+    public static final BlockType POPLAR_DOOR_BLOCK = register("minecraft:poplar_door_block", BlockID.POPLAR_DOOR_BLOCK);
+    public static final BlockType POPLAR_TRAPDOOR = register("minecraft:poplar_trapdoor", BlockID.POPLAR_TRAPDOOR);
+    public static final BlockType POPLAR_BUTTON = register("minecraft:poplar_button", BlockID.POPLAR_BUTTON);
+    public static final BlockType POPLAR_PRESSURE_PLATE = register("minecraft:poplar_pressure_plate", BlockID.POPLAR_PRESSURE_PLATE);
+    public static final BlockType POPLAR_STANDING_SIGN = register("minecraft:poplar_standing_sign", BlockID.POPLAR_STANDING_SIGN);
+    public static final BlockType POPLAR_WALL_SIGN = register("minecraft:poplar_wall_sign", BlockID.POPLAR_WALL_SIGN);
+    public static final BlockType POPLAR_SAPLING = register("minecraft:poplar_sapling", BlockID.POPLAR_SAPLING);
+    public static final BlockType YELLOW_POPLAR_LEAVES = register("minecraft:yellow_poplar_leaves", BlockID.YELLOW_POPLAR_LEAVES);
+    public static final BlockType ORANGE_POPLAR_LEAVES = register("minecraft:orange_poplar_leaves", BlockID.ORANGE_POPLAR_LEAVES);
+    public static final BlockType RED_POPLAR_LEAVES = register("minecraft:red_poplar_leaves", BlockID.RED_POPLAR_LEAVES);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));
