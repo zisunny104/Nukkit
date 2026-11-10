@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockCactusFlower extends BlockFlowable {
+public class BlockCactusFlower extends BlockGroundPlant {
 
     public BlockCactusFlower() {
         this(0);
@@ -18,5 +18,10 @@ public class BlockCactusFlower extends BlockFlowable {
     @Override
     public String getName() {
         return "Cactus Flower";
+    }
+
+    @Override
+    protected boolean canStandOn(Block down) {
+        return down.getId() == CACTUS;
     }
 }

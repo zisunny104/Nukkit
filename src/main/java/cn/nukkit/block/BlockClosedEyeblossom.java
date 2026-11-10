@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockClosedEyeblossom extends BlockFlowable {
+public class BlockClosedEyeblossom extends BlockGroundPlant {
 
     public BlockClosedEyeblossom() {
         this(0);

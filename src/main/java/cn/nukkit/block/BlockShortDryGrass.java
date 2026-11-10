@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockShortDryGrass extends BlockFlowable {
+public class BlockShortDryGrass extends BlockGroundPlant {
 
     public BlockShortDryGrass() {
         this(0);
@@ -18,5 +18,11 @@ public class BlockShortDryGrass extends BlockFlowable {
     @Override
     public String getName() {
         return "Short Dry Grass";
+    }
+
+    @Override
+    protected boolean canStandOn(Block down) {
+        int id = down.getId();
+        return super.canStandOn(down) || id == SAND || id == HARDENED_CLAY || id == STAINED_HARDENED_CLAY;
     }
 }

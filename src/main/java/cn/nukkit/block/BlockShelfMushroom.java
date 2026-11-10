@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockShelfMushroom extends BlockFlowable {
+public class BlockShelfMushroom extends BlockGroundPlant {
 
     public BlockShelfMushroom() {
         this(0);
