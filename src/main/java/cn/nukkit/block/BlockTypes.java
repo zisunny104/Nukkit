@@ -884,6 +884,12 @@ public class BlockTypes {
     public static final BlockType SULFUR_BRICK_STAIRS = register("minecraft:sulfur_brick_stairs", BlockID.SULFUR_BRICK_STAIRS);
     public static final BlockType SULFUR_BRICK_WALL = register("minecraft:sulfur_brick_wall", BlockID.SULFUR_BRICK_WALL);
     public static final BlockType CHISELED_SULFUR = register("minecraft:chiseled_sulfur", BlockID.CHISELED_SULFUR);
+    public static final BlockType RESIN_BLOCK = register("minecraft:resin_block", BlockID.RESIN_BLOCK);
+    public static final BlockType RESIN_BRICKS = register("minecraft:resin_bricks", BlockID.RESIN_BRICKS);
+    public static final BlockType RESIN_BRICK_SLAB = register("minecraft:resin_brick_slab", BlockID.RESIN_BRICK_SLAB);
+    public static final BlockType RESIN_BRICK_DOUBLE_SLAB = register("minecraft:resin_brick_double_slab", BlockID.RESIN_BRICK_DOUBLE_SLAB);
+    public static final BlockType RESIN_BRICK_STAIRS = register("minecraft:resin_brick_stairs", BlockID.RESIN_BRICK_STAIRS);
+    public static final BlockType RESIN_BRICK_WALL = register("minecraft:resin_brick_wall", BlockID.RESIN_BRICK_WALL);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));
