@@ -25,8 +25,14 @@ public class BlockPaleOakSapling extends BlockSapling {
 
     @Override
     protected boolean growTreeHere() {
-        // TODO: tree generator for this sapling, it does not grow until it exists
-        return false;
+        // pale oak only grows as a 2x2 group, same shape as dark oak (TODO: official shape and creaking heart, resin)
+        cn.nukkit.math.Vector2 v = this.findSaplings(this.getDamage() & 0x7);
+        if (v == null) {
+            return false;
+        }
+        return growGenerated(new cn.nukkit.level.generator.object.tree.ObjectDarkOakTree(
+                Block.get(PALE_OAK_LOG), Block.get(PALE_OAK_LEAVES)),
+                this.add(v.getFloorX(), 0, v.getFloorY()), true);
     }
 
     @Override
