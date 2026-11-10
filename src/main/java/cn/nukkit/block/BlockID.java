@@ -900,4 +900,10 @@ public interface BlockID {
     int SULFUR_BRICK_STAIRS = 1134;
     int SULFUR_BRICK_WALL = 1135;
     int CHISELED_SULFUR = 1136;
+    int RESIN_BLOCK = 1137;
+    int RESIN_BRICKS = 1138;
+    int RESIN_BRICK_SLAB = 1139;
+    int RESIN_BRICK_DOUBLE_SLAB = 1140;
+    int RESIN_BRICK_STAIRS = 1141;
+    int RESIN_BRICK_WALL = 1142;
 }

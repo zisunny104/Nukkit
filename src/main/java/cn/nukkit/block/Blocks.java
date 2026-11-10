@@ -828,5 +828,11 @@ class Blocks {
         list[SULFUR_BRICK_STAIRS] = BlockStairsSulfurBrick.class; //1134
         list[SULFUR_BRICK_WALL] = BlockWallSulfurBrick.class; //1135
         list[CHISELED_SULFUR] = BlockSulfurChiseled.class; //1136
+        list[RESIN_BLOCK] = BlockResinBlock.class; //1137
+        list[RESIN_BRICKS] = BlockResinBrick.class; //1138
+        list[RESIN_BRICK_SLAB] = BlockResinBrickSlab.class; //1139
+        list[RESIN_BRICK_DOUBLE_SLAB] = BlockDoubleResinBrickSlab.class; //1140
+        list[RESIN_BRICK_STAIRS] = BlockResinBrickStairs.class; //1141
+        list[RESIN_BRICK_WALL] = BlockResinBrickWall.class; //1142
     }
 }
