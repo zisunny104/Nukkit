@@ -61,6 +61,10 @@ public class BlockChest extends BlockTransparentMeta implements Faceable {
         return ItemTool.TYPE_AXE;
     }
 
+    protected boolean canPairWith(Block other) {
+        return other instanceof BlockChest;
+    }
+
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         BlockEntityChest chest = null;
@@ -73,7 +77,7 @@ public class BlockChest extends BlockTransparentMeta implements Faceable {
                 continue;
             }
             Block c = this.getSide(side);
-            if (c instanceof BlockChest &&
+            if (this.canPairWith(c) &&
                     (c.getDamage() == this.getDamage() || (c.getDamage() == 0 && this.getDamage() == 2))) { // leveldb states, idk
 
                 BlockEntity blockEntity = this.getLevel().getBlockEntity(c);
