@@ -930,5 +930,29 @@ class Blocks {
         list[BLACK_WOOL_SLAB] = BlockSlabBlackWool.class; //1236
         list[BLACK_WOOL_DOUBLE_SLAB] = BlockDoubleSlabBlackWool.class; //1237
         list[BLACK_WOOL_STAIRS] = BlockStairsBlackWool.class; //1238
+        list[COPPER_BARS] = BlockCopperBars.class; //1239
+        list[COPPER_LANTERN] = BlockCopperLantern.class; //1240
+        list[EXPOSED_COPPER_BARS] = BlockExposedCopperBars.class; //1241
+        list[EXPOSED_COPPER_LANTERN] = BlockExposedCopperLantern.class; //1242
+        list[WEATHERED_COPPER_BARS] = BlockWeatheredCopperBars.class; //1243
+        list[WEATHERED_COPPER_LANTERN] = BlockWeatheredCopperLantern.class; //1244
+        list[OXIDIZED_COPPER_BARS] = BlockOxidizedCopperBars.class; //1245
+        list[OXIDIZED_COPPER_LANTERN] = BlockOxidizedCopperLantern.class; //1246
+        list[WAXED_COPPER_BARS] = BlockWaxedCopperBars.class; //1247
+        list[WAXED_COPPER_LANTERN] = BlockWaxedCopperLantern.class; //1248
+        list[WAXED_EXPOSED_COPPER_BARS] = BlockWaxedExposedCopperBars.class; //1249
+        list[WAXED_EXPOSED_COPPER_LANTERN] = BlockWaxedExposedCopperLantern.class; //1250
+        list[WAXED_WEATHERED_COPPER_BARS] = BlockWaxedWeatheredCopperBars.class; //1251
+        list[WAXED_WEATHERED_COPPER_LANTERN] = BlockWaxedWeatheredCopperLantern.class; //1252
+        list[WAXED_OXIDIZED_COPPER_BARS] = BlockWaxedOxidizedCopperBars.class; //1253
+        list[WAXED_OXIDIZED_COPPER_LANTERN] = BlockWaxedOxidizedCopperLantern.class; //1254
+        list[EXPOSED_LIGHTNING_ROD] = BlockExposedLightningRod.class; //1255
+        list[WEATHERED_LIGHTNING_ROD] = BlockWeatheredLightningRod.class; //1256
+        list[OXIDIZED_LIGHTNING_ROD] = BlockOxidizedLightningRod.class; //1257
+        list[WAXED_LIGHTNING_ROD] = BlockWaxedLightningRod.class; //1258
+        list[WAXED_EXPOSED_LIGHTNING_ROD] = BlockWaxedExposedLightningRod.class; //1259
+        list[WAXED_WEATHERED_LIGHTNING_ROD] = BlockWaxedWeatheredLightningRod.class; //1260
+        list[WAXED_OXIDIZED_LIGHTNING_ROD] = BlockWaxedOxidizedLightningRod.class; //1261
+        list[COPPER_TORCH] = BlockCopperTorch.class; //1262
     }
 }
