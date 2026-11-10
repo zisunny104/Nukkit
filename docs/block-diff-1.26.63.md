@@ -38,3 +38,16 @@ TODO：樹生成器（樹苗暫不生長）、hanging sign、shelf、船、tall_
 
 ## 第二輪（行為）待辦
 所有方塊已存在（id 至 1315）。以下只有 id、狀態、物品與放置，行為待補：shelf 13、hanging sign（楊樹/pale_oak，另缺方塊實體與物品）、銅 chain/chest/golem statue 24（chest 與雕像缺方塊實體）、chalkboard、creaking_heart、disc_press、dried_ghast、ice_crystal、icicle、potent_sulfur、sulfur_spike、resin_clump、straw_bed、chiseled_resin_bricks、pale_moss_carpet 四邊與 pale_hanging_moss 末端、銅氧化與打蠟、樹生成器、船、植物骨粉與 tall_dry_grass 上半。
+
+## 未驗證項目總表
+
+All groups were checked by compile, boot against a world copy and a clean merge only. Nothing was placed, read or written in game.
+
+1. All 258 new blocks: placing, save/load round trip, creative inventory and item correspondence. Recipes belong to the recipe session.
+2. Shelf, hanging sign, dried ghast and straw bed direction rules are inferred, not captured.
+3. Copper oxidation and wax: random tick rate, chest block entity kept after oxidation.
+4. Pale oak sapling: 2x2 tree with dark oak shape. Poplar sapling: oak shape with yellow poplar leaves only. TODO official shapes, other leaf colors, creaking heart and resin on trees.
+5. Wildflowers and leaf litter stacking follows the packets; bone meal on them is not implemented (TODO).
+6. Pale moss carpet and hanging moss keep meta; their growth by bone meal is not implemented (TODO).
+7. Round-2 BDS captures still open: stair corners, chorus, shelf and hanging sign directions (see docs/bds-capture-checklist.md).
+8. Commit 3f8507a48 is broken in history (729 palette duplicate); fixed forward later.
