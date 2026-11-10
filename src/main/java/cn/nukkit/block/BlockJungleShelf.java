@@ -1,0 +1,22 @@
+package cn.nukkit.block;
+
+public class BlockJungleShelf extends BlockTransparentMeta {
+
+    public BlockJungleShelf() {
+        this(0);
+    }
+
+    public BlockJungleShelf(int meta) {
+        super(meta);
+    }
+
+    @Override
+    public int getId() {
+        return JUNGLE_SHELF;
+    }
+
+    @Override
+    public String getName() {
+        return "Jungle Shelf";
+    }
+}

@@ -35,3 +35,6 @@ bush cactus_flower closed_eyeblossom creaking_heart dried_ghast firefly_bush gol
 ## 進度（feature/blocks-flora）
 已補：植物 12（id 1055–1066）、pale_oak 18（1067–1084）、poplar 20（1085–1104）、物品 pale_oak/poplar 門與告示牌（851–854）。
 TODO：樹生成器（樹苗暫不生長）、hanging sign、shelf、船、tall_dry_grass 上半、骨粉；其餘群組（銅、sulfur、cinnabar、resin、pale moss、concrete/wool 台階樓梯）。
+
+## 第二輪（行為）待辦
+所有方塊已存在（id 至 1315）。以下只有 id、狀態、物品與放置，行為待補：shelf 13、hanging sign（楊樹/pale_oak，另缺方塊實體與物品）、銅 chain/chest/golem statue 24（chest 與雕像缺方塊實體）、chalkboard、creaking_heart、disc_press、dried_ghast、ice_crystal、icicle、potent_sulfur、sulfur_spike、resin_clump、straw_bed、chiseled_resin_bricks、pale_moss_carpet 四邊與 pale_hanging_moss 末端、銅氧化與打蠟、樹生成器、船、植物骨粉與 tall_dry_grass 上半。
