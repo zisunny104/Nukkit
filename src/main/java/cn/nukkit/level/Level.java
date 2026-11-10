@@ -148,6 +148,11 @@ public class Level implements ChunkManager, Metadatable, GeneratorTaskFactory {
         randomTickBlocks[BlockID.CUT_COPPER] = true;
         randomTickBlocks[BlockID.EXPOSED_CUT_COPPER] = true;
         randomTickBlocks[BlockID.WEATHERED_CUT_COPPER] = true;
+        for (int[] family : new int[][]{CopperFamilies.BARS, CopperFamilies.LANTERN, CopperFamilies.CHAIN, CopperFamilies.CHEST, CopperFamilies.GOLEM_STATUE, CopperFamilies.LIGHTNING_ROD}) {
+            for (int i = 0; i < 3; i++) {
+                randomTickBlocks[family[i]] = true;
+            }
+        }
         randomTickBlocks[BlockID.CUT_COPPER_STAIRS] = true;
         randomTickBlocks[BlockID.EXPOSED_CUT_COPPER_STAIRS] = true;
         randomTickBlocks[BlockID.WEATHERED_CUT_COPPER_STAIRS] = true;

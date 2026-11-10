@@ -2793,6 +2793,7 @@ public class Server {
         BlockEntity.registerBlockEntity(BlockEntity.BEEHIVE, BlockEntityBeehive.class);
         BlockEntity.registerBlockEntity(BlockEntity.HANGING_SIGN, BlockEntityHangingSign.class);
         BlockEntity.registerBlockEntity(BlockEntity.DECORATED_POT, BlockEntityDecoratedPot.class);
+        BlockEntity.registerBlockEntity(BlockEntity.COPPER_GOLEM_STATUE, BlockEntityCopperGolemStatue.class);
         BlockEntity.registerBlockEntity(BlockEntity.CRAFTER, BlockEntityCrafter.class);
         BlockEntity.registerBlockEntity(BlockEntity.CREAKING_HEART, BlockEntityCreakingHeart.class);
         BlockEntity.registerBlockEntity(BlockEntity.VAULT, BlockEntityVault.class);
