@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockFireflyBush extends BlockFlowable {
+public class BlockFireflyBush extends BlockGroundPlant {
 
     public BlockFireflyBush() {
         this(0);
