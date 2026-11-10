@@ -31,3 +31,7 @@ pale_oak_button pale_oak_door pale_oak_double_slab pale_oak_fence pale_oak_fence
 
 ## 其他（15）
 bush cactus_flower closed_eyeblossom creaking_heart dried_ghast firefly_bush golden_dandelion leaf_litter open_eyeblossom red_shrub shelf_mushroom short_dry_grass straw_bed tall_dry_grass wildflowers
+
+## 進度（feature/blocks-flora）
+已補：植物 12（id 1055–1066）、pale_oak 18（1067–1084）、poplar 20（1085–1104）、物品 pale_oak/poplar 門與告示牌（851–854）。
+TODO：樹生成器（樹苗暫不生長）、hanging sign、shelf、船、tall_dry_grass 上半、骨粉；其餘群組（銅、sulfur、cinnabar、resin、pale moss、concrete/wool 台階樓梯）。
