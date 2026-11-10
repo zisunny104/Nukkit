@@ -405,6 +405,10 @@ public class ItemTypes {
     public static final ItemType CHERRY_SIGN = register("minecraft:cherry_sign", ItemID.CHERRY_SIGN);
     public static final ItemType SOUL_CAMPFIRE = register("minecraft:soul_campfire", ItemID.SOUL_CAMPFIRE);
     public static final ItemType GLOW_ITEM_FRAME = register("minecraft:glow_frame", ItemID.GLOW_ITEM_FRAME);
+    public static final ItemType PALE_OAK_DOOR = register("minecraft:pale_oak_door", ItemID.PALE_OAK_DOOR);
+    public static final ItemType PALE_OAK_SIGN = register("minecraft:pale_oak_sign", ItemID.PALE_OAK_SIGN);
+    public static final ItemType POPLAR_DOOR = register("minecraft:poplar_door", ItemID.POPLAR_DOOR);
+    public static final ItemType POPLAR_SIGN = register("minecraft:poplar_sign", ItemID.POPLAR_SIGN);
 
     private static ItemType register(String identifier, int legacyId) {
         return register(new ItemTypeImpl(identifier, legacyId));

@@ -412,4 +412,8 @@ public interface ItemID {
     int SOUL_CAMPFIRE = 801;
     //
     int GLOW_ITEM_FRAME = 850;
+    int PALE_OAK_DOOR = 851;
+    int PALE_OAK_SIGN = 852;
+    int POPLAR_DOOR = 853;
+    int POPLAR_SIGN = 854;
 }

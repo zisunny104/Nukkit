@@ -313,5 +313,9 @@ class Items {
         list[CHERRY_SIGN] = ItemSignCherry.class; //800
         list[SOUL_CAMPFIRE] = ItemCampfireSoul.class; //801
         list[GLOW_ITEM_FRAME] = ItemItemFrameGlow.class; //850
+        list[PALE_OAK_DOOR] = ItemDoorPaleOak.class; //851
+        list[PALE_OAK_SIGN] = ItemSignPaleOak.class; //852
+        list[POPLAR_DOOR] = ItemDoorPoplar.class; //853
+        list[POPLAR_SIGN] = ItemSignPoplar.class; //854
     }
 }
