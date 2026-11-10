@@ -6,9 +6,14 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 
-public class BlockPaleMossCarpet extends BlockTransparent {
+public class BlockPaleMossCarpet extends BlockTransparentMeta {
 
     public BlockPaleMossCarpet() {
+        this(0);
+    }
+
+    public BlockPaleMossCarpet(int meta) {
+        super(meta);
     }
 
     @Override
