@@ -3268,13 +3268,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     if (inputX >= -1.001 && inputX <= 1.001 && inputY >= -1.001 && inputY <= 1.001) {
                         ((EntityControllable) riding).onPlayerInput(this, inputX, inputY);
                     }
-                } else if (this.riding instanceof EntityBoat && authPacket.getInputData().contains(AuthInputAction.IN_CLIENT_PREDICTED_IN_VEHICLE)) {
-                    // The rowing client moves the boat itself and reports where it is
-                    if (this.riding.getId() == authPacket.getPredictedVehicle() && this.riding.isControlling(this)) {
-                        if (this.temporalVector.setComponents(authPacket.getPosition().getX(), authPacket.getPosition().getY(), authPacket.getPosition().getZ()).distanceSquared(this.riding) < 16) {
-                            ((EntityBoat) this.riding).onInput(authPacket.getPosition().getX(), authPacket.getPosition().getY(), authPacket.getPosition().getZ(), authPacket.getHeadYaw());
-                        }
-                    }
                 }
 
                 if (!this.isSpectator() && authPacket.getInputData().contains(AuthInputAction.MISSED_SWING)) {
