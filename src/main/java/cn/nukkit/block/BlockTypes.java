@@ -1010,6 +1010,7 @@ public class BlockTypes {
     public static final BlockType WAXED_WEATHERED_LIGHTNING_ROD = register("minecraft:waxed_weathered_lightning_rod", BlockID.WAXED_WEATHERED_LIGHTNING_ROD);
     public static final BlockType WAXED_OXIDIZED_LIGHTNING_ROD = register("minecraft:waxed_oxidized_lightning_rod", BlockID.WAXED_OXIDIZED_LIGHTNING_ROD);
     public static final BlockType COPPER_TORCH = register("minecraft:copper_torch", BlockID.COPPER_TORCH);
+    public static final BlockType PALE_MOSS_BLOCK = register("minecraft:pale_moss_block", BlockID.PALE_MOSS_BLOCK);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));

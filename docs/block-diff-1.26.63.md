@@ -35,3 +35,4 @@ bush cactus_flower closed_eyeblossom creaking_heart dried_ghast firefly_bush gol
 ## 進度（feature/blocks-flora）
 已補：植物 12（id 1055–1066）、pale_oak 18（1067–1084）、poplar 20（1085–1104）、物品 pale_oak/poplar 門與告示牌（851–854）。
 TODO：樹生成器（樹苗暫不生長）、hanging sign、shelf、船、tall_dry_grass 上半、骨粉；其餘群組（銅、sulfur、cinnabar、resin、pale moss、concrete/wool 台階樓梯）。
+TODO（pale moss）：pale_moss_carpet、pale_hanging_moss 狀態鍵與模板不同，未補。
