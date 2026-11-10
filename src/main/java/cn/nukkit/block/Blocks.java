@@ -758,5 +758,23 @@ class Blocks {
         list[GOLDEN_DANDELION] = BlockGoldenDandelion.class; //1064
         list[RED_SHRUB] = BlockRedShrub.class; //1065
         list[SHELF_MUSHROOM] = BlockShelfMushroom.class; //1066
+        list[PALE_OAK_PLANKS] = BlockPaleOakPlanks.class; //1067
+        list[PALE_OAK_LOG] = BlockPaleOakLog.class; //1068
+        list[PALE_OAK_WOOD] = BlockPaleOakWood.class; //1069
+        list[STRIPPED_PALE_OAK_LOG] = BlockStrippedPaleOakLog.class; //1070
+        list[STRIPPED_PALE_OAK_WOOD] = BlockStrippedPaleOakWood.class; //1071
+        list[PALE_OAK_STAIRS] = BlockPaleOakStairs.class; //1072
+        list[PALE_OAK_SLAB] = BlockPaleOakSlab.class; //1073
+        list[PALE_OAK_DOUBLE_SLAB] = BlockPaleOakDoubleSlab.class; //1074
+        list[PALE_OAK_FENCE] = BlockPaleOakFence.class; //1075
+        list[PALE_OAK_FENCE_GATE] = BlockPaleOakFenceGate.class; //1076
+        list[PALE_OAK_DOOR_BLOCK] = BlockPaleOakDoor.class; //1077
+        list[PALE_OAK_TRAPDOOR] = BlockPaleOakTrapdoor.class; //1078
+        list[PALE_OAK_BUTTON] = BlockPaleOakButton.class; //1079
+        list[PALE_OAK_PRESSURE_PLATE] = BlockPaleOakPressurePlate.class; //1080
+        list[PALE_OAK_STANDING_SIGN] = BlockPaleOakStandingSign.class; //1081
+        list[PALE_OAK_WALL_SIGN] = BlockPaleOakWallSign.class; //1082
+        list[PALE_OAK_LEAVES] = BlockPaleOakLeaves.class; //1083
+        list[PALE_OAK_SAPLING] = BlockPaleOakSapling.class; //1084
     }
 }

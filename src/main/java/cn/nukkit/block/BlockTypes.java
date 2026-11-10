@@ -814,6 +814,24 @@ public class BlockTypes {
     public static final BlockType GOLDEN_DANDELION = register("minecraft:golden_dandelion", BlockID.GOLDEN_DANDELION);
     public static final BlockType RED_SHRUB = register("minecraft:red_shrub", BlockID.RED_SHRUB);
     public static final BlockType SHELF_MUSHROOM = register("minecraft:shelf_mushroom", BlockID.SHELF_MUSHROOM);
+    public static final BlockType PALE_OAK_PLANKS = register("minecraft:pale_oak_planks", BlockID.PALE_OAK_PLANKS);
+    public static final BlockType PALE_OAK_LOG = register("minecraft:pale_oak_log", BlockID.PALE_OAK_LOG);
+    public static final BlockType PALE_OAK_WOOD = register("minecraft:pale_oak_wood", BlockID.PALE_OAK_WOOD);
+    public static final BlockType STRIPPED_PALE_OAK_LOG = register("minecraft:stripped_pale_oak_log", BlockID.STRIPPED_PALE_OAK_LOG);
+    public static final BlockType STRIPPED_PALE_OAK_WOOD = register("minecraft:stripped_pale_oak_wood", BlockID.STRIPPED_PALE_OAK_WOOD);
+    public static final BlockType PALE_OAK_STAIRS = register("minecraft:pale_oak_stairs", BlockID.PALE_OAK_STAIRS);
+    public static final BlockType PALE_OAK_SLAB = register("minecraft:pale_oak_slab", BlockID.PALE_OAK_SLAB);
+    public static final BlockType PALE_OAK_DOUBLE_SLAB = register("minecraft:pale_oak_double_slab", BlockID.PALE_OAK_DOUBLE_SLAB);
+    public static final BlockType PALE_OAK_FENCE = register("minecraft:pale_oak_fence", BlockID.PALE_OAK_FENCE);
+    public static final BlockType PALE_OAK_FENCE_GATE = register("minecraft:pale_oak_fence_gate", BlockID.PALE_OAK_FENCE_GATE);
+    public static final BlockType PALE_OAK_DOOR_BLOCK = register("minecraft:pale_oak_door_block", BlockID.PALE_OAK_DOOR_BLOCK);
+    public static final BlockType PALE_OAK_TRAPDOOR = register("minecraft:pale_oak_trapdoor", BlockID.PALE_OAK_TRAPDOOR);
+    public static final BlockType PALE_OAK_BUTTON = register("minecraft:pale_oak_button", BlockID.PALE_OAK_BUTTON);
+    public static final BlockType PALE_OAK_PRESSURE_PLATE = register("minecraft:pale_oak_pressure_plate", BlockID.PALE_OAK_PRESSURE_PLATE);
+    public static final BlockType PALE_OAK_STANDING_SIGN = register("minecraft:pale_oak_standing_sign", BlockID.PALE_OAK_STANDING_SIGN);
+    public static final BlockType PALE_OAK_WALL_SIGN = register("minecraft:pale_oak_wall_sign", BlockID.PALE_OAK_WALL_SIGN);
+    public static final BlockType PALE_OAK_LEAVES = register("minecraft:pale_oak_leaves", BlockID.PALE_OAK_LEAVES);
+    public static final BlockType PALE_OAK_SAPLING = register("minecraft:pale_oak_sapling", BlockID.PALE_OAK_SAPLING);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));
