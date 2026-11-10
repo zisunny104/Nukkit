@@ -25,7 +25,7 @@ public class BlockPaleOakSapling extends BlockSapling {
 
     @Override
     protected boolean growTreeHere() {
-        // TODO: pale oak tree generator, the sapling does not grow until it exists
+        // TODO: tree generator for this sapling, it does not grow until it exists
         return false;
     }
 
