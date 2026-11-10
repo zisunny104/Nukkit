@@ -171,6 +171,10 @@ public class BlockSapling extends BlockFlowable {
                 return true;
         }
 
+        return growGenerated(generator, vector3, bigTree);
+    }
+
+    protected boolean growGenerated(BasicGenerator generator, Vector3 vector3, boolean bigTree) {
         if (bigTree) {
             this.level.setBlock(vector3, Block.get(AIR), true, true);
             this.level.setBlock(vector3.add(1, 0, 0), Block.get(AIR), true, true);
@@ -253,7 +257,7 @@ public class BlockSapling extends BlockFlowable {
         VALID_SAPLINGS[3] = new Vector2[]{new Vector2(0, 0), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(-1, 1)};
     }
 
-    private Vector2 findSaplings(int type) {
+    protected Vector2 findSaplings(int type) {
         for (Vector2[] validVectors : VALID_SAPLINGS) {
             boolean found = true;
 
