@@ -776,5 +776,25 @@ class Blocks {
         list[PALE_OAK_WALL_SIGN] = BlockPaleOakWallSign.class; //1082
         list[PALE_OAK_LEAVES] = BlockPaleOakLeaves.class; //1083
         list[PALE_OAK_SAPLING] = BlockPaleOakSapling.class; //1084
+        list[POPLAR_PLANKS] = BlockPoplarPlanks.class; //1085
+        list[POPLAR_LOG] = BlockPoplarLog.class; //1086
+        list[POPLAR_WOOD] = BlockPoplarWood.class; //1087
+        list[STRIPPED_POPLAR_LOG] = BlockStrippedPoplarLog.class; //1088
+        list[STRIPPED_POPLAR_WOOD] = BlockStrippedPoplarWood.class; //1089
+        list[POPLAR_STAIRS] = BlockPoplarStairs.class; //1090
+        list[POPLAR_SLAB] = BlockPoplarSlab.class; //1091
+        list[POPLAR_DOUBLE_SLAB] = BlockPoplarDoubleSlab.class; //1092
+        list[POPLAR_FENCE] = BlockPoplarFence.class; //1093
+        list[POPLAR_FENCE_GATE] = BlockPoplarFenceGate.class; //1094
+        list[POPLAR_DOOR_BLOCK] = BlockPoplarDoor.class; //1095
+        list[POPLAR_TRAPDOOR] = BlockPoplarTrapdoor.class; //1096
+        list[POPLAR_BUTTON] = BlockPoplarButton.class; //1097
+        list[POPLAR_PRESSURE_PLATE] = BlockPoplarPressurePlate.class; //1098
+        list[POPLAR_STANDING_SIGN] = BlockPoplarStandingSign.class; //1099
+        list[POPLAR_WALL_SIGN] = BlockPoplarWallSign.class; //1100
+        list[POPLAR_SAPLING] = BlockPoplarSapling.class; //1101
+        list[YELLOW_POPLAR_LEAVES] = BlockYellowPoplarLeaves.class; //1102
+        list[ORANGE_POPLAR_LEAVES] = BlockOrangePoplarLeaves.class; //1103
+        list[RED_POPLAR_LEAVES] = BlockRedPoplarLeaves.class; //1104
     }
 }
