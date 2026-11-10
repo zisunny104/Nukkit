@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockCrimsonShelf extends BlockTransparentMeta {
+public class BlockCrimsonShelf extends BlockShelf {
 
     public BlockCrimsonShelf() {
         this(0);
