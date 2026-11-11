@@ -954,5 +954,8 @@ class Blocks {
         list[WAXED_WEATHERED_LIGHTNING_ROD] = BlockWaxedWeatheredLightningRod.class; //1260
         list[WAXED_OXIDIZED_LIGHTNING_ROD] = BlockWaxedOxidizedLightningRod.class; //1261
         list[COPPER_TORCH] = BlockCopperTorch.class; //1262
+        list[PALE_MOSS_BLOCK] = BlockPaleMoss.class; //1263
+        list[PALE_MOSS_CARPET] = BlockPaleMossCarpet.class; //1264
+        list[PALE_HANGING_MOSS] = BlockPaleHangingMoss.class; //1265
     }
 }
