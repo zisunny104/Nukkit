@@ -1,6 +1,6 @@
 package cn.nukkit.block;
 
-public class BlockPoplarHangingSign extends BlockTransparentMeta {
+public class BlockPoplarHangingSign extends BlockHangingSign {
 
     public BlockPoplarHangingSign() {
         this(0);
