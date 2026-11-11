@@ -106,6 +106,11 @@ public class BlockRailDetector extends BlockRail {
         if (changed) {
             level.updateComparatorOutputLevel(this);
         }
+
+        if (isPowered) {
+            // re-check every second so the rail turns off once the minecart has left
+            level.scheduleUpdate(this, 20);
+        }
     }
 
     @Override

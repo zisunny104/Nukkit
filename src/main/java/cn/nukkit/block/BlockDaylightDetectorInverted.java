@@ -40,7 +40,6 @@ public class BlockDaylightDetectorInverted extends BlockDaylightDetector {
 
     @Override
     public int getWeakPower(BlockFace face) {
-        int time = level.getTime() % Level.TIME_FULL;
-        return time < 13184 || time > 22800 ? 0 : 15;
+        return 15 - this.getSunPower();
     }
 }
