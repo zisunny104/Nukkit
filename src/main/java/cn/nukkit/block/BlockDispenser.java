@@ -132,15 +132,18 @@ public class BlockDispenser extends BlockSolidMeta implements Faceable {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_SCHEDULED) {
-            this.setTriggered(false);
-            this.level.setBlock((int) this.x, (int) this.y, (int) this.z, BlockLayer.NORMAL, this, false, false, false); // No need to send this to client
+            // triggered stays set while the power lasts, so it fires once per rising edge
             dispense();
             return type;
         } else if (type == Level.BLOCK_UPDATE_REDSTONE) {
-            if (!isTriggered() && (level.isBlockPowered(this) || level.isBlockPowered(this.getSideVec(BlockFace.UP)))) {
+            boolean powered = level.isBlockPowered(this) || level.isBlockPowered(this.getSideVec(BlockFace.UP));
+            if (powered && !isTriggered()) {
                 this.setTriggered(true);
                 this.level.setBlock((int) this.x, (int) this.y, (int) this.z, BlockLayer.NORMAL, this, false, false, false); // No need to send this to client
                 level.scheduleUpdate(this, this, 4);
+            } else if (!powered && isTriggered()) {
+                this.setTriggered(false);
+                this.level.setBlock((int) this.x, (int) this.y, (int) this.z, BlockLayer.NORMAL, this, false, false, false); // No need to send this to client
             }
 
             return type;
