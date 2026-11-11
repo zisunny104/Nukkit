@@ -264,5 +264,6 @@ public class Network {
         this.registerPacket(ProtocolInfo.DISCONNECT_PACKET, DisconnectPacket.class);
         this.registerPacket(ProtocolInfo.BOSS_EVENT_PACKET, BossEventPacket.class);
         this.registerPacket(ProtocolInfo.ANVIL_DAMAGE_PACKET, AnvilDamagePacket.class);
+        this.registerPacket(ProtocolInfo.__INTERNAL__TOGGLE_CRAFTER_SLOT_REQUEST_PACKET, ToggleCrafterSlotRequestPacket.class);
     }
 }
