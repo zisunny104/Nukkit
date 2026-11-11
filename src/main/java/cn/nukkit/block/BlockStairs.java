@@ -22,14 +22,12 @@ public abstract class BlockStairs extends BlockSolidMeta implements Faceable {
 
     @Override
     public double getMinY() {
-        // TODO: this seems wrong
-        return this.y + (this.getDamage() & 0x04) > 0 ? 0.5 : 0;
+        return this.y + ((this.getDamage() & 0x04) > 0 ? 0.5 : 0);
     }
 
     @Override
     public double getMaxY() {
-        // TODO: this seems wrong
-        return this.y + (this.getDamage() & 0x04) > 0 ? 1 : 0.5;
+        return this.y + ((this.getDamage() & 0x04) > 0 ? 1 : 0.5);
     }
 
 

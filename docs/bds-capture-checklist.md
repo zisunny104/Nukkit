@@ -33,7 +33,7 @@
 ## 核心目前看得出的問題（尚未修）
 
 stairs（`BlockStairs`）
-- `getMinY`／`getMaxY` 的運算式 `this.y + (this.getDamage() & 0x04) > 0 ? ...` 因運算子優先順序，條件幾乎永遠成立，結果與 y 座標有關，程式內也已標 TODO。
+- (fixed) `getMinY`／`getMaxY` 的運算式 `this.y + (this.getDamage() & 0x04) > 0 ? ...` 因運算子優先順序，條件幾乎永遠成立，結果與 y 座標有關，程式內也已標 TODO。
 - 官方 palette 的樓梯有 `minecraft:corner` 狀態（none、inner_left、inner_right、outer_left、outer_right），共 40 個狀態；核心只存方向與上下半，沒有轉角狀態與轉角碰撞箱，鄰居變動時也不重算形狀。
 - 碰撞只處理直樓梯的階梯，沒有轉角版本。
 
@@ -42,3 +42,5 @@ chorus（`BlockChorusPlant`、`BlockChorusFlower`）
 - chorus flower 有 age 0 到 5，核心有成長、死亡邏輯，但生長規則是參考 Java 版（隨機數與高度限制），與 BDS 是否一致沒驗證。
 - 沒有骨粉處理，也沒有箭等投射物擊破 chorus flower 的處理（待抓包確認）。
 - 掉落：chorus plant 隨機掉 chorus fruit，silk touch 掉自己，與官方是否一致沒驗證。
+
+Note: the core palette keeps only the default `corner`/`connection_*` state per block (stairs 8 of 40 states, chorus plant 1 of 64). The client draws the corner/connection from the state it receives, so the core would have to compute these from the neighbours when sending the block. TODO after the round-2 capture confirms who sets them (server).
