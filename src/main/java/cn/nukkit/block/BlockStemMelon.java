@@ -31,6 +31,9 @@ public class BlockStemMelon extends BlockCrops {
         return "Melon Stem";
     }
 
+    /** Data bits 0-2 are the growth, bits 3-5 the facing_direction toward the fruit (0 while there is none). */
+    private static final int GROWTH_MASK = 0x07;
+
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
@@ -40,7 +43,7 @@ public class BlockStemMelon extends BlockCrops {
             }
         } else if (type == Level.BLOCK_UPDATE_RANDOM) {
             if (Utils.rand()) {
-                if (this.getDamage() < 0x07) {
+                if ((this.getDamage() & GROWTH_MASK) < 0x07) {
                     Block block = this.clone();
                     block.setDamage(block.getDamage() + 1);
                     BlockGrowEvent ev = new BlockGrowEvent(this, block);
@@ -56,13 +59,17 @@ public class BlockStemMelon extends BlockCrops {
                             return Level.BLOCK_UPDATE_RANDOM;
                         }
                     }
-                    Block side = this.getSide(Plane.HORIZONTAL.random());
+                    BlockFace sideFace = Plane.HORIZONTAL.random();
+                    Block side = this.getSide(sideFace);
                     Block d;
                     if (side.getId() == AIR && ((d = side.down()).getId() == FARMLAND || d.getId() == GRASS || d.getId() == DIRT)) {
                         BlockGrowEvent ev = new BlockGrowEvent(side, Block.get(MELON_BLOCK));
                         Server.getInstance().getPluginManager().callEvent(ev);
                         if (!ev.isCancelled()) {
                             this.getLevel().setBlock(side, ev.getNewState(), true);
+                            // the stem leans toward its fruit (data bits 3-5 are the facing_direction)
+                            this.setDamage((this.getDamage() & GROWTH_MASK) | (sideFace.getIndex() << 3));
+                            this.getLevel().setBlock(this, this, true);
                         }
                     }
                 }
@@ -79,7 +86,7 @@ public class BlockStemMelon extends BlockCrops {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (this.getDamage() < 4) return new Item[0];
+        if ((this.getDamage() & GROWTH_MASK) < 4) return new Item[0];
         return new Item[]{
                 Item.get(Item.MELON_SEEDS, 0, Utils.rand(0, 48) >> 4)
         };
