@@ -74,7 +74,12 @@ public class EntityHorse extends EntityHorseBase {
             }
         }
 
-        return drops.toArray(new Item[0]);
+        return this.addGearDrops(drops);
+    }
+
+    @Override
+    protected java.util.function.IntPredicate bodyItems() {
+        return MountGear.HORSE_ARMOR;
     }
 
     private static int getRandomVariant() {
