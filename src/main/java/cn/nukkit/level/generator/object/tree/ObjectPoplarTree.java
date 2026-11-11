@@ -12,7 +12,7 @@ public class ObjectPoplarTree extends ObjectOakTree {
 
     @Override
     protected boolean overridable(int id) {
-        return super.overridable(id) || id == BlockID.POPLAR_LOG || id == BlockID.YELLOW_POPLAR_LEAVES;
+        return super.overridable(id) || id == BlockID.POPLAR_LOG || (id >= BlockID.YELLOW_POPLAR_LEAVES && id <= BlockID.RED_POPLAR_LEAVES);
     }
 
     @Override
@@ -20,8 +20,17 @@ public class ObjectPoplarTree extends ObjectOakTree {
         return BlockID.POPLAR_LOG;
     }
 
+    /** One of the three leaf colors, chosen once per tree. */
+    private int leaf = BlockID.YELLOW_POPLAR_LEAVES;
+
+    @Override
+    public void placeObject(cn.nukkit.level.ChunkManager level, int x, int y, int z, cn.nukkit.math.NukkitRandom random) {
+        this.leaf = BlockID.YELLOW_POPLAR_LEAVES + random.nextBoundedInt(3);
+        super.placeObject(level, x, y, z, random);
+    }
+
     @Override
     public int getLeafBlock() {
-        return BlockID.YELLOW_POPLAR_LEAVES;
+        return this.leaf;
     }
 }
