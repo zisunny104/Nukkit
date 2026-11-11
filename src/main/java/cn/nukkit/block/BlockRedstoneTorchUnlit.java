@@ -64,6 +64,11 @@ public class BlockRedstoneTorchUnlit extends BlockTorch {
         BlockFace face = getBlockFace().getOpposite();
 
         if (!this.level.isSidePowered(this.getSideVec(face), face)) {
+            if (BlockRedstoneTorch.isBurnedOut(this, false)) {
+                // burned out: look again after it has cooled down
+                this.level.scheduleUpdate(this, 160);
+                return false;
+            }
             this.level.setBlock(this, Block.get(REDSTONE_TORCH, getDamage()), false, true);
 
             for (BlockFace side : BlockFace.values()) {
