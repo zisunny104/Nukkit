@@ -157,8 +157,13 @@ public class BlockSignPost extends BlockTransparentMeta implements Faceable {
 
     @Override
     public boolean onActivate(Item item, Player player) {
+        return dyeSign(this, item, player);
+    }
+
+    /** Ink sac, glow ink sac and dye on a sign or hanging sign. */
+    public static boolean dyeSign(Block block, Item item, Player player) {
         if (item instanceof ItemDye) {
-            BlockEntity blockEntity = this.level.getBlockEntityIfLoaded(player == null ? null : player.chunk, this);
+            BlockEntity blockEntity = block.level.getBlockEntityIfLoaded(player == null ? null : player.chunk, block);
             if (!(blockEntity instanceof BlockEntitySign)) {
                 return false;
             }
@@ -174,8 +179,8 @@ public class BlockSignPost extends BlockTransparentMeta implements Faceable {
                     return false;
                 }
 
-                SignGlowEvent event = new SignGlowEvent(this, player, glow);
-                this.level.getServer().getPluginManager().callEvent(event);
+                SignGlowEvent event = new SignGlowEvent(block, player, glow);
+                block.level.getServer().getPluginManager().callEvent(event);
                 if (event.isCancelled()) {
                     /*if (player != null) {
                         sign.spawnTo(player);
@@ -186,7 +191,7 @@ public class BlockSignPost extends BlockTransparentMeta implements Faceable {
                 sign.setGlowing(glow);
                 sign.spawnToAll();
 
-                this.level.addLevelEvent(this, LevelEventPacket.EVENT_SOUND_INK_SAC_USED);
+                block.level.addLevelEvent(block, LevelEventPacket.EVENT_SOUND_INK_SAC_USED);
 
                 if (player != null && (player.getGamemode() & 0x01) == 0) {
                     item.count--;
@@ -203,8 +208,8 @@ public class BlockSignPost extends BlockTransparentMeta implements Faceable {
                 return false;
             }
 
-            SignColorChangeEvent event = new SignColorChangeEvent(this, player, color);
-            this.level.getServer().getPluginManager().callEvent(event);
+            SignColorChangeEvent event = new SignColorChangeEvent(block, player, color);
+            block.level.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
                 if (player != null) {
                     sign.spawnTo(player);
@@ -215,7 +220,7 @@ public class BlockSignPost extends BlockTransparentMeta implements Faceable {
             sign.setColor(color);
             sign.spawnToAll();
 
-            this.level.addLevelEvent(this, LevelEventPacket.EVENT_SOUND_DYE_USED);
+            block.level.addLevelEvent(block, LevelEventPacket.EVENT_SOUND_DYE_USED);
 
             if (player != null && (player.getGamemode() & 0x01) == 0) {
                 item.count--;
