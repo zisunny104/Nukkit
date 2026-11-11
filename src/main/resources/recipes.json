@@ -37754,18 +37754,19 @@
                 {
                     "type": "default",
                     "count": 1,
-                    "id": "minecraft:string",
-                    "itemId": 329,
+                    "id": "minecraft:web",
+                    "itemId": 30,
                     "auxValue": 32767
                 }
             ],
             "output": [
                 {
                     "legacyId": 329,
-                    "id": "minecraft:string"
+                    "id": "minecraft:string",
+                    "count": 9
                 }
             ],
-            "block": "deprecated",
+            "block": "crafting_table",
             "priority": 0
         },
         {
@@ -37786,7 +37787,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37808,7 +37809,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37830,7 +37831,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37852,7 +37853,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37874,7 +37875,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37896,7 +37897,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37918,7 +37919,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37940,7 +37941,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37962,7 +37963,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -37984,7 +37985,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38006,7 +38007,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38028,7 +38029,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38050,7 +38051,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38072,7 +38073,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38094,7 +38095,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38116,7 +38117,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38138,7 +38139,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
@@ -38160,7 +38161,7 @@
                     "id": "minecraft:charcoal"
                 }
             ],
-            "block": "deprecated",
+            "block": "furnace",
             "priority": 0,
             "unlockContext": "ALWAYS_UNLOCKED"
         },
