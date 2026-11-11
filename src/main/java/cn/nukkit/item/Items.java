@@ -307,6 +307,15 @@ class Items {
         list[AMETHYST_SHARD] = ItemAmethystShard.class; //771
         list[SPYGLASS] = ItemSpyglass.class; //772
         list[RECORD_OTHERSIDE] = ItemRecordOtherside.class; //773
+        list[COPPER_SWORD] = ItemSwordCopper.class; //749
+        list[COPPER_SHOVEL] = ItemShovelCopper.class; //750
+        list[COPPER_PICKAXE] = ItemPickaxeCopper.class; //751
+        list[COPPER_AXE] = ItemAxeCopper.class; //752
+        list[COPPER_HOE] = ItemHoeCopper.class; //753
+        list[COPPER_HELMET] = ItemHelmetCopper.class; //754
+        list[COPPER_CHESTPLATE] = ItemChestplateCopper.class; //755
+        list[COPPER_LEGGINGS] = ItemLeggingsCopper.class; //756
+        list[COPPER_BOOTS] = ItemBootsCopper.class; //757
         list[BAMBOO_DOOR] = ItemDoorBamboo.class; //797
         list[BAMBOO_SIGN] = ItemSignBamboo.class; //798
         list[CHERRY_DOOR] = ItemDoorCherry.class; //799
