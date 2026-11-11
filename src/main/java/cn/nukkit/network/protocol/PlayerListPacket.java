@@ -50,7 +50,7 @@ public class PlayerListPacket extends DataPacket {
                     this.putVarLong(entry.entityId);
                     this.putString(entry.name);
                     this.putString(entry.xboxUserId);
-                    this.putString(entry.skin == null || entry.skin.getPlayFabId() == null ? "" : entry.skin.getPlayFabId());
+                    this.putString(entry.skin.getPlayFabId());
                     this.putString(entry.platformChatId);
                     this.putLInt(entry.buildPlatform);
                     this.putSkin(entry.skin);
