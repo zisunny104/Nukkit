@@ -108,8 +108,34 @@ public class BlockFire extends BlockFlowable {
         return new Item[0];
     }
 
+    /** Data bits 0-3 are the age, bits 4-8 the official connection states north, east, south, west, up. */
+    private static final int AGE_MASK = 0x0F;
+    private static final int CONNECTION_SHIFT = 4;
+    private static final BlockFace[] CONNECTION_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP};
+
+    /** A side is connected when the block next to it can burn. Soul fire has no connection states. */
+    private void refreshConnections() {
+        if (this.getId() != FIRE || this.level == null || this.level.getProvider() instanceof cn.nukkit.level.format.anvil.Anvil) {
+            return;
+        }
+        int meta = this.getDamage() & AGE_MASK;
+        for (int i = 0; i < CONNECTION_FACES.length; i++) {
+            Block side = this.getSideIfLoaded(CONNECTION_FACES[i]);
+            if (side != null && side.getBurnAbility() > 0) {
+                meta |= 1 << (CONNECTION_SHIFT + i);
+            }
+        }
+        if (meta != this.getDamage()) {
+            this.setDamage(meta);
+            this.getLevel().setBlock(this, this, true, true);
+        }
+    }
+
     @Override
     public int onUpdate(int type) {
+        if (type == Level.BLOCK_UPDATE_NORMAL || type == Level.BLOCK_UPDATE_RANDOM || type == Level.BLOCK_UPDATE_SCHEDULED) {
+            this.refreshConnections();
+        }
         if (type == Level.BLOCK_UPDATE_NORMAL || type == Level.BLOCK_UPDATE_RANDOM) {
             if (!this.isBlockTopFacingSurfaceSolid(this.down()) && !this.canNeighborBurn()) {
                 this.getLevel().setBlock(this, Block.get(BlockID.AIR), true);
@@ -138,13 +164,13 @@ public class BlockFire extends BlockFlowable {
                 return 0;
             }
 
-            int meta = this.getDamage();
+            int meta = this.getDamage() & AGE_MASK;
             ThreadLocalRandom random = ThreadLocalRandom.current();
 
             if (meta < 15) {
                 int newMeta = meta + random.nextInt(3);
                 if (newMeta > 15) newMeta = 15;
-                this.setDamage(newMeta);
+                this.setDamage((this.getDamage() & ~AGE_MASK) | newMeta);
                 this.getLevel().setBlock((int) this.x, (int) this.y, (int) this.z, BlockLayer.NORMAL, this, false, true, false); // No need to send this to client
             }
 
