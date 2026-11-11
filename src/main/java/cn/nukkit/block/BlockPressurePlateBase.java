@@ -128,6 +128,11 @@ public abstract class BlockPressurePlateBase extends BlockFlowable {
         }
     }
 
+    /** Ticks before the plate is re-checked: 20 for wood/stone, 10 for weighted plates. */
+    protected int getActivationDelay() {
+        return 20;
+    }
+
     protected void updateState(int oldStrength) {
         int strength = this.computeRedstoneStrength();
         boolean wasPowered = oldStrength > 0;
@@ -150,7 +155,7 @@ public abstract class BlockPressurePlateBase extends BlockFlowable {
         }
 
         if (isPowered) {
-            this.level.scheduleUpdate(this, 20);
+            this.level.scheduleUpdate(this, this.getActivationDelay());
         }
     }
 
