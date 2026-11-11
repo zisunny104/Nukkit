@@ -129,7 +129,13 @@ public class NetherNetPlayerSession extends SimpleChannelInboundHandler<Object> 
             DataPacket packet;
             while ((packet = this.outbound.poll()) != null) {
                 if (!(packet instanceof BatchPacket)) {
-                    packet.tryEncode();
+                    try {
+                        packet.tryEncode();
+                    } catch (Throwable e) {
+                        // One packet that cannot be encoded must not take the others of this tick with it
+                        log.error("Failed to encode {} for {}", packet.getClass().getSimpleName(), this.channel.remoteAddress(), e);
+                        continue;
+                    }
                 }
 
                 if (packet instanceof DisconnectPacket) {
@@ -160,7 +166,7 @@ public class NetherNetPlayerSession extends SimpleChannelInboundHandler<Object> 
                 this.sendPackets(toBatch);
             }
         } catch (Throwable e) {
-            log.error("Failed to tick RakNetPlayerSession for {}", this.channel.remoteAddress(), e);
+            log.error("Failed to tick NetherNetPlayerSession for {}", this.channel.remoteAddress(), e);
         }
     }
 
