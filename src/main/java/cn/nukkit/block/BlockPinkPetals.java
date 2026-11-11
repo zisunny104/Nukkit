@@ -64,7 +64,9 @@ public class BlockPinkPetals extends BlockFlowable {
                 this.setDamage((this.getDamage() & ~GROWTH_MASK) | ((growth + 1) << 2));
                 this.getLevel().setBlock(this, this, true, true);
             } else {
-                this.level.dropItem(this.add(0.5, 0.5, 0.5), this.toItem().setCount(1));
+                Item drop = this.toItem();
+                drop.setCount(1);
+                this.level.dropItem(this.add(0.5, 0.5, 0.5), drop);
             }
             return true;
         }
