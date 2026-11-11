@@ -131,6 +131,68 @@ public class StateBlockStorage {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        this.compact(chunkBuilder);
+    }
+
+    /**
+     * A world that was converted can hold the same state many times in the palette of one section, and entries that no block uses.
+     * The palette is made short when it is read, and the chunk is saved short the next time it is written.
+     */
+    private void compact(ChunkBuilder chunkBuilder) {
+        int size = this.palette.size();
+        if (size <= 1) {
+            return;
+        }
+
+        boolean[] used = new boolean[size];
+        for (int i = 0; i < SECTION_SIZE; i++) {
+            int index = this.bitArray.get(i);
+            if (index >= size) {
+                return; // not a palette that can be sorted out
+            }
+            used[index] = true;
+        }
+
+        java.util.Map<BlockStateSnapshot, Integer> indexOf = new java.util.HashMap<>();
+        List<BlockStateSnapshot> compact = new ObjectArrayList<>();
+        int[] remap = new int[size];
+        for (int i = 0; i < size; i++) {
+            if (!used[i]) {
+                continue;
+            }
+            BlockStateSnapshot state = this.palette.get(i);
+            Integer at = indexOf.get(state);
+            if (at == null) {
+                at = compact.size();
+                indexOf.put(state, at);
+                compact.add(state);
+            }
+            remap[i] = at;
+        }
+
+        if (compact.size() == size) {
+            return;
+        }
+
+        BitArray packed;
+        if (compact.size() == 1) {
+            packed = BitArrayVersion.V0.createPalette(SECTION_SIZE, null);
+        } else {
+            BitArrayVersion version = BitArrayVersion.V1;
+            while (version.getMaxEntryValue() < compact.size() - 1) {
+                version = version.next();
+            }
+            packed = version.createPalette();
+            for (int i = 0; i < SECTION_SIZE; i++) {
+                packed.set(i, remap[this.bitArray.get(i)]);
+            }
+        }
+
+        this.bitArray = packed;
+        this.palette.clear();
+        this.palette.addAll(compact);
+        chunkBuilder.dirty();
     }
 
     public void setBlockState(int index, NbtMap state) {
@@ -210,17 +272,70 @@ public class StateBlockStorage {
 
     public void writeTo(BinaryStream stream) {
         BitArray bitArray = this.bitArray;
-
-        stream.putByte((byte) this.getPaletteHeader(bitArray.getVersion(), true));
-        if (bitArray.getVersion() != BitArrayVersion.V0) {
-            for (int word : bitArray.getWords()) {
-                stream.putLInt(word);
+        int size = this.palette.size();
+        boolean[] used = new boolean[size];
+        if (bitArray.getVersion() == BitArrayVersion.V0) {
+            used[0] = true;
+        } else {
+            for (int i = 0; i < SECTION_SIZE; i++) {
+                used[bitArray.get(i)] = true;
             }
-            stream.putVarInt(this.palette.size());
         }
 
-        for (BlockStateSnapshot state : this.palette) {
-            stream.putVarInt(state.getRuntimeIdNetworkProtocol());
+        // A converted world can hold the same state many times in one palette, and entries that no block uses. A client that is given
+        // thousands of entries for the 4096 blocks of one section stops in its renderer, so every state is sent once and only if it is used.
+        it.unimi.dsi.fastutil.ints.Int2IntMap indexOf = new it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap();
+        it.unimi.dsi.fastutil.ints.IntList compact = new it.unimi.dsi.fastutil.ints.IntArrayList();
+        int[] remap = new int[size];
+        for (int i = 0; i < size; i++) {
+            if (!used[i]) {
+                continue;
+            }
+            int runtimeId = this.palette.get(i).getRuntimeIdNetworkProtocol();
+            int at = indexOf.getOrDefault(runtimeId, -1);
+            if (at == -1) {
+                at = compact.size();
+                indexOf.put(runtimeId, at);
+                compact.add(runtimeId);
+            }
+            remap[i] = at;
+        }
+
+        if (compact.size() == size) {
+            stream.putByte((byte) this.getPaletteHeader(bitArray.getVersion(), true));
+            if (bitArray.getVersion() != BitArrayVersion.V0) {
+                for (int word : bitArray.getWords()) {
+                    stream.putLInt(word);
+                }
+                stream.putVarInt(size);
+            }
+            for (int runtimeId : compact) {
+                stream.putVarInt(runtimeId);
+            }
+            return;
+        }
+
+        if (compact.size() == 1) {
+            stream.putByte((byte) this.getPaletteHeader(BitArrayVersion.V0, true));
+            stream.putVarInt(compact.getInt(0));
+            return;
+        }
+
+        BitArrayVersion version = BitArrayVersion.V1;
+        while (version.getMaxEntryValue() < compact.size() - 1) {
+            version = version.next();
+        }
+        BitArray packed = version.createPalette();
+        for (int i = 0; i < SECTION_SIZE; i++) {
+            packed.set(i, remap[bitArray.get(i)]);
+        }
+        stream.putByte((byte) this.getPaletteHeader(version, true));
+        for (int word : packed.getWords()) {
+            stream.putLInt(word);
+        }
+        stream.putVarInt(compact.size());
+        for (int runtimeId : compact) {
+            stream.putVarInt(runtimeId);
         }
     }
 
