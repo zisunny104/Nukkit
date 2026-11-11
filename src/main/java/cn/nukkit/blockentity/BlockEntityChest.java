@@ -2,6 +2,7 @@ package cn.nukkit.blockentity;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockChest;
 import cn.nukkit.block.BlockID;
 import cn.nukkit.inventory.BaseInventory;
 import cn.nukkit.inventory.ChestInventory;
@@ -93,7 +94,7 @@ public class BlockEntityChest extends BlockEntitySpawnable implements InventoryH
     @Override
     public boolean isBlockEntityValid() {
         int id = level.getBlockIdAt(chunk, (int) x, (int) y, (int) z);
-        return id == Block.CHEST || id == Block.TRAPPED_CHEST;
+        return id > 0 && id < Block.MAX_BLOCK_ID && Block.list[id] != null && BlockChest.class.isAssignableFrom(Block.list[id]);
     }
 
     @Override
