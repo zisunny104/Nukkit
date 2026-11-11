@@ -37748,6 +37748,28 @@
             "assumeSymetry": true
         },
         {
+            "id": "minecraft:cobweb_to_string",
+            "type": 0,
+            "input": [
+                {
+                    "type": "default",
+                    "count": 1,
+                    "id": "minecraft:web",
+                    "itemId": 30,
+                    "auxValue": 32767
+                }
+            ],
+            "output": [
+                {
+                    "legacyId": 329,
+                    "id": "minecraft:string",
+                    "count": 9
+                }
+            ],
+            "block": "crafting_table",
+            "priority": 0
+        },
+        {
             "id": "minecraft:furnace_acacia_wood",
             "type": 0,
             "input": [
