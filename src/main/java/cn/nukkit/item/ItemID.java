@@ -410,6 +410,15 @@ public interface ItemID {
     int CHERRY_DOOR = 799;
     int CHERRY_SIGN = 800;
     int SOUL_CAMPFIRE = 801;
+    int COPPER_SWORD = 749;
+    int COPPER_SHOVEL = 750;
+    int COPPER_PICKAXE = 751;
+    int COPPER_AXE = 752;
+    int COPPER_HOE = 753;
+    int COPPER_HELMET = 754;
+    int COPPER_CHESTPLATE = 755;
+    int COPPER_LEGGINGS = 756;
+    int COPPER_BOOTS = 757;
     //
     int GLOW_ITEM_FRAME = 850;
 }
