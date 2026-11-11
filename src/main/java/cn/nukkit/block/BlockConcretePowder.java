@@ -54,14 +54,16 @@ public class BlockConcretePowder extends BlockFallableMeta {
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            super.onUpdate(Level.BLOCK_UPDATE_NORMAL);
-
             for (int side = 1; side <= 5; side++) {
                 Block block = this.getSide(BlockFace.fromIndex(side));
                 if (block.getId() == Block.WATER || block.getId() == Block.STILL_WATER) {
+                    // Convert before the fall check, otherwise a falling entity is spawned too and lands as powder again
                     this.level.setBlock(this, Block.get(Block.CONCRETE, this.getDamage()), true, true);
+                    return Level.BLOCK_UPDATE_NORMAL;
                 }
             }
+
+            super.onUpdate(Level.BLOCK_UPDATE_NORMAL);
 
             return Level.BLOCK_UPDATE_NORMAL;
         }
