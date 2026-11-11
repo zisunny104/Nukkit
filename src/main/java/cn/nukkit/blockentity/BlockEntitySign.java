@@ -121,7 +121,7 @@ public class BlockEntitySign extends BlockEntitySpawnable {
 
     @Override
     public boolean updateCompoundTag(CompoundTag nbt, Player player) {
-        if (!nbt.getString("id").equals(BlockEntity.SIGN)) {
+        if (!nbt.getString("id").equals(this.getSignId())) {
             return false;
         }
         String[] lines = new String[4];
@@ -154,10 +154,15 @@ public class BlockEntitySign extends BlockEntitySpawnable {
         return false;
     }
 
+    /** Block entity id of the sign kind; hanging signs use their own. */
+    protected String getSignId() {
+        return BlockEntity.SIGN;
+    }
+
     @Override
     public CompoundTag getSpawnCompound() {
         return new CompoundTag()
-                .putString("id", BlockEntity.SIGN)
+                .putString("id", this.getSignId())
                 .putString("Text", this.namedTag.getString("Text"))
                 .putInt("SignTextColor", this.getColor().getARGB())
                 .putBoolean("IgnoreLighting", this.isGlowing())

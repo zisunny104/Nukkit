@@ -54,7 +54,23 @@ public abstract class BlockHangingSign extends BlockTransparentMeta {
             nbt.putString("Creator", player.getUniqueId().toString());
         }
         BlockEntity.createBlockEntity(BlockEntity.HANGING_SIGN, this.getChunk(), nbt);
+        if (player != null) {
+            cn.nukkit.network.protocol.OpenSignPacket pk = new cn.nukkit.network.protocol.OpenSignPacket();
+            pk.position = this.asBlockVector3();
+            pk.frontSide = true;
+            player.dataPacket(pk);
+        }
         return true;
+    }
+
+    @Override
+    public boolean canBeActivated() {
+        return true;
+    }
+
+    @Override
+    public boolean onActivate(Item item, cn.nukkit.Player player) {
+        return BlockSignPost.dyeSign(this, item, player);
     }
 
     @Override
