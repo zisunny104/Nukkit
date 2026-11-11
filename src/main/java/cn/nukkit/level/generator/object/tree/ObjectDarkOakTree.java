@@ -14,8 +14,18 @@ import cn.nukkit.math.Vector3;
  */
 public class ObjectDarkOakTree extends TreeGenerator {
 
-    private static final Block DARK_OAK_LOG = Block.get(BlockID.WOOD2, BlockWood2.DARK_OAK);
-    private static final Block DARK_OAK_LEAVES = Block.get(BlockID.LEAVES2, BlockLeaves2.DARK_OAK);
+    private final Block DARK_OAK_LOG;
+    private final Block DARK_OAK_LEAVES;
+
+    public ObjectDarkOakTree() {
+        this(Block.get(BlockID.WOOD2, BlockWood2.DARK_OAK), Block.get(BlockID.LEAVES2, BlockLeaves2.DARK_OAK));
+    }
+
+    /** Same shape with other log and leaves (pale oak). */
+    public ObjectDarkOakTree(Block log, Block leaves) {
+        this.DARK_OAK_LOG = log;
+        this.DARK_OAK_LEAVES = leaves;
+    }
 
     @Override
     public boolean generate(ChunkManager level, NukkitRandom rand, Vector3 position) {
