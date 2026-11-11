@@ -157,15 +157,23 @@ public class Item implements Cloneable, BlockID, ItemID, ProtocolInfo {
             CREATIVE_ITEMS.addGroup(creativeGroup);
         }
 
+        java.util.List<String> skipped = new java.util.ArrayList<>();
         for (JsonElement element : itemsArray) {
             JsonObject creativeItem = element.getAsJsonObject();
             Item item = mapping.parseCreativeItem(creativeItem, true);
+            if (item == null || item.getName().equals(UNKNOWN_STR)) {
+                skipped.add(creativeItem.has("id") ? creativeItem.get("id").getAsString() : "?");
+            }
 
             // Add only implemented items
             if (item != null && !item.getName().equals(UNKNOWN_STR)) {
                 CreativeItemGroup creativeGroup = CREATIVE_ITEMS.getGroups().get(creativeItem.get("groupId").getAsInt());
                 CREATIVE_ITEMS.add(item, creativeGroup);
             }
+        }
+
+        if (!skipped.isEmpty()) {
+            Server.getInstance().getLogger().info("Creative items not loaded (" + skipped.size() + "): " + String.join(", ", skipped));
         }
 
         // Custom items are registered before initCreativeItems, but we need groups ready before adding them here
