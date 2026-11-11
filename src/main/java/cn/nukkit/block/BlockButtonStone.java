@@ -45,4 +45,9 @@ public class BlockButtonStone extends BlockButton {
     public boolean canHarvestWithHand() {
         return false;
     }
+
+    @Override
+    public int getActivationTicks() {
+        return 20;
+    }
 }

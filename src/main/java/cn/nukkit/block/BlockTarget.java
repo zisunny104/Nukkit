@@ -75,7 +75,21 @@ public class BlockTarget extends BlockSolid {
                 EntityProjectile projectile = (EntityProjectile) e;
                 boolean isArrowTrident = e instanceof EntityArrow || e instanceof EntityThrownTrident;
                 if (projectile.getCollidedTick() > 0 && level.getServer().getTick() - projectile.getCollidedTick() < (isArrowTrident ? 20 : 8)) {
-                    return 10;
+                    // 1-15 by distance of the hit from the face center (bullseye = 15)
+                    double dx = Math.abs(e.x - (this.x + 0.5));
+                    double dy = Math.abs(e.y - (this.y + 0.5));
+                    double dz = Math.abs(e.z - (this.z + 0.5));
+                    double max = Math.max(dx, Math.max(dy, dz));
+                    double d;
+                    if (max == dx) {
+                        d = Math.max(dy, dz);
+                    } else if (max == dy) {
+                        d = Math.max(dx, dz);
+                    } else {
+                        d = Math.max(dx, dy);
+                    }
+                    double f = Math.max(0, Math.min(1, (0.5 - d) / 0.5));
+                    return Math.max(1, (int) Math.ceil(15 * f));
                 }
             }
         }

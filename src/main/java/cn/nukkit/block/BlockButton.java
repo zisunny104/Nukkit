@@ -58,7 +58,7 @@ public abstract class BlockButton extends BlockFlowable implements Faceable {
         this.setDamage(this.getDamage() ^ 0x08);
         this.level.setBlock(this, this, true, true);
         this.level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_POWER_ON);
-        this.level.scheduleUpdate(this, 30);
+        this.level.scheduleUpdate(this, this.getActivationTicks());
 
         level.updateAroundRedstone(this, null);
         level.updateAroundRedstone(getSideVec(getFacing().getOpposite()), null);
@@ -98,6 +98,11 @@ public abstract class BlockButton extends BlockFlowable implements Faceable {
             return Block.canStayOnFullSolid(block);
         }
         return Block.canConnectToFullSolid(block);
+    }
+
+    /** Wooden buttons stay pressed 30 ticks, stone buttons 20. */
+    public int getActivationTicks() {
+        return 30;
     }
 
     public boolean isActivated() {
