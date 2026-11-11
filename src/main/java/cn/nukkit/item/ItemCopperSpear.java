@@ -28,4 +28,9 @@ public class ItemCopperSpear extends ItemTool {
     public int getAttackDamage() {
         return 2;
     }
+
+    @Override
+    public int getEnchantAbility() {
+        return 13;
+    }
 }

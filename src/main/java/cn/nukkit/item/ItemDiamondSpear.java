@@ -16,7 +16,7 @@ public class ItemDiamondSpear extends ItemTool {
 
     @Override
     public int getMaxDurability() {
-        return ItemTool.DURABILITY_DIAMOND;
+        return 1560;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class ItemDiamondSpear extends ItemTool {
     @Override
     public int getAttackDamage() {
         return 4;
+    }
+
+    @Override
+    public int getEnchantAbility() {
+        return 10;
     }
 }
