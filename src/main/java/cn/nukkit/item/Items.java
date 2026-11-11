@@ -316,6 +316,16 @@ class Items {
         list[COPPER_CHESTPLATE] = ItemChestplateCopper.class; //755
         list[COPPER_LEGGINGS] = ItemLeggingsCopper.class; //756
         list[COPPER_BOOTS] = ItemBootsCopper.class; //757
+        list[WOODEN_SPEAR] = ItemWoodenSpear.class; //861
+        list[STONE_SPEAR] = ItemStoneSpear.class; //860
+        list[COPPER_SPEAR] = ItemCopperSpear.class; //855
+        list[IRON_SPEAR] = ItemIronSpear.class; //858
+        list[GOLDEN_SPEAR] = ItemGoldenSpear.class; //857
+        list[DIAMOND_SPEAR] = ItemDiamondSpear.class; //856
+        list[NETHERITE_SPEAR] = ItemNetheriteSpear.class; //859
+        list[RECORD_TEARS] = ItemRecordTears.class; //836
+        list[RECORD_LAVA_CHICKEN] = ItemRecordLavaChicken.class; //837
+        list[RECORD_BOUNCE] = ItemRecordBounce.class; //838
         list[BAMBOO_DOOR] = ItemDoorBamboo.class; //797
         list[BAMBOO_SIGN] = ItemSignBamboo.class; //798
         list[CHERRY_DOOR] = ItemDoorCherry.class; //799
