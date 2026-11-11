@@ -1,5 +1,7 @@
 package cn.nukkit.block;
 
+import cn.nukkit.Player;
+
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
@@ -9,7 +11,7 @@ import cn.nukkit.utils.BlockColor;
  * Created on 2015/12/6 by xtypr.
  * Package cn.nukkit.block in project Nukkit .
  */
-public class BlockWaxedExposedCopperBars extends BlockThin {
+public class BlockWaxedExposedCopperBars extends BlockThin implements CopperFamily {
 
     public BlockWaxedExposedCopperBars() {
         this(0);
@@ -73,5 +75,26 @@ public class BlockWaxedExposedCopperBars extends BlockThin {
     @Override
     public WaterloggingType getWaterloggingType() {
         return WaterloggingType.WHEN_PLACED_IN_WATER;
+    }
+
+    @Override
+    public int[] getFamilyIds() {
+        return CopperFamilies.BARS;
+    }
+
+    @Override
+    public boolean canBeActivated() {
+        return true;
+    }
+
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        return CopperFamily.super.onActivate(item, player) || super.onActivate(item, player);
+    }
+
+    @Override
+    public int onUpdate(int type) {
+        int result = CopperFamily.super.onUpdate(type);
+        return result != 0 ? result : super.onUpdate(type);
     }
 }

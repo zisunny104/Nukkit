@@ -82,6 +82,13 @@ public abstract class Block extends Position implements Metadatable, Cloneable, 
 
             Blocks.init();
 
+            // every oxidizable block (doors, bulbs, grates, chiseled, ...) takes random ticks, so none has to be listed by hand
+            for (int id = 0; id < MAX_BLOCK_ID; id++) {
+                if (list[id] != null && Oxidizable.class.isAssignableFrom(list[id])) {
+                    cn.nukkit.level.Level.randomTickBlocks[id] = true;
+                }
+            }
+
             for (int id = 0; id < MAX_BLOCK_ID; id++) {
                 Class<?> c = list[id];
                 if (c != null) {
