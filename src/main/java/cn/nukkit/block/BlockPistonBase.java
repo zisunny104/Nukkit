@@ -159,11 +159,8 @@ public abstract class BlockPistonBase extends BlockSolidMeta implements Faceable
     }
 
     private boolean isPowered() {
+        // the face the head points to does not power the piston
         BlockFace face = getFacing();
-
-        // Revert to opposite
-        if (face == BlockFace.UP) face = BlockFace.DOWN;
-        if (face == BlockFace.DOWN) face = BlockFace.UP;
 
         for (BlockFace side : BlockFace.values()) {
             if (side != face && this.level.isSidePowered(this.getSideVec(side), side)) {
