@@ -1,0 +1,16 @@
+package cn.nukkit.item;
+
+public class ItemSheafPotterySherd extends Item {
+
+    public ItemSheafPotterySherd() {
+        this(0, 1);
+    }
+
+    public ItemSheafPotterySherd(Integer meta) {
+        this(meta, 1);
+    }
+
+    public ItemSheafPotterySherd(Integer meta, int count) {
+        super(SHEAF_POTTERY_SHERD, meta, count, "Sheaf Pottery Sherd");
+    }
+}
