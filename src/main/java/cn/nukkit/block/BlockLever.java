@@ -95,7 +95,7 @@ public class BlockLever extends BlockFlowable implements Faceable {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
-        LeverOrientation faces = LeverOrientation.forFacings(face, player.getHorizontalFacing());
+        LeverOrientation faces = LeverOrientation.forFacings(face, player != null ? player.getHorizontalFacing() : BlockFace.NORTH);
         this.setDamage(faces.getMetadata());
         if (!isSupportValid(this.getSide(faces.facing.getOpposite()))) {
             return false;
