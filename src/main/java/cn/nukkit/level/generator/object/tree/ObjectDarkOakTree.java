@@ -99,6 +99,8 @@ public class ObjectDarkOakTree extends TreeGenerator {
                     this.placeLeafAt(level, k1, i2 + 2, l1 + 1);
                 }
 
+                this.growBranch(level, rand, k1, i2, l1);
+
                 for (int j3 = -3; j3 <= 4; ++j3) {
                     for (int i4 = -3; i4 <= 4; ++i4) {
                         if ((j3 != -3 || i4 != -3) && (j3 != -3 || i4 != 4) && (j3 != 4 || i4 != -3) && (j3 != 4 || i4 != 4) && (Math.abs(j3) < 3 || Math.abs(i4) < 3)) {
@@ -140,6 +142,10 @@ public class ObjectDarkOakTree extends TreeGenerator {
         }
     }
 
+    /** Extra side branch with a flat leaf cap, used by the pale oak (official: chance 1/3, length 2-5, canopy 2). */
+    protected void growBranch(ChunkManager level, NukkitRandom rand, int x, int y, int z) {
+    }
+
     private boolean placeTreeOfHeight(ChunkManager worldIn, Vector3 pos, int height) {
         int i = pos.getFloorX();
         int j = pos.getFloorY();
@@ -170,13 +176,13 @@ public class ObjectDarkOakTree extends TreeGenerator {
         return true;
     }
 
-    private void placeLogAt(ChunkManager worldIn, Vector3 pos) {
+    protected void placeLogAt(ChunkManager worldIn, Vector3 pos) {
         if (this.canGrowInto(worldIn.getBlockIdAt(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ()))) {
             this.setBlockAndNotifyAdequately(worldIn, pos, DARK_OAK_LOG);
         }
     }
 
-    private void placeLeafAt(ChunkManager worldIn, int x, int y, int z) {
+    protected void placeLeafAt(ChunkManager worldIn, int x, int y, int z) {
         Vector3 blockpos = new Vector3(x, y, z);
         int material = worldIn.getBlockIdAt(blockpos.getFloorX(), blockpos.getFloorY(), blockpos.getFloorZ());
 
