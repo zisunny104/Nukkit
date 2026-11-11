@@ -203,6 +203,19 @@ public class BlockNoteblock extends BlockSolid {
             case RESPAWN_ANCHOR:
                 return Instrument.BASS_DRUM;
             default:
+                // blocks added after the explicit lists above: pick by material like the official game
+                Block below = this.down();
+                if (below.isSolid()) {
+                    if (below.getName().contains("Glass")) {
+                        return Instrument.STICKS;
+                    }
+                    if (below.getToolType() == ItemTool.TYPE_AXE) {
+                        return Instrument.BASS;
+                    }
+                    if (below.getToolType() == ItemTool.TYPE_PICKAXE) {
+                        return Instrument.BASS_DRUM;
+                    }
+                }
                 return Instrument.PIANO;
         }
     }
