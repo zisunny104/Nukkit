@@ -3,6 +3,7 @@ package cn.nukkit.block;
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
+import cn.nukkit.level.Level;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.SimpleAxisAlignedBB;
@@ -40,6 +41,7 @@ public abstract class BlockStairs extends BlockSolidMeta implements Faceable {
             this.setDamage(this.getDamage() | 0x04); //Upside-down stairs
         }
         this.getLevel().setBlock(this, this, true, true);
+        this.updateCorners();
         return true;
     }
 
@@ -59,72 +61,142 @@ public abstract class BlockStairs extends BlockSolidMeta implements Faceable {
         return new ItemBlock(Block.get(this.getId(), 0), 0);
     }
 
+    /** Meta bits 0-1 direction of the high side, bit 2 upside down, bits 3-5 corner (0 none, 1 inner_left, 2 inner_right, 3 outer_left, 4 outer_right). */
+    public static final int CORNER_SHIFT = 3;
+    public static final int CORNER_MASK = 0x38;
+    private static final BlockFace[] DIRECTIONS = {BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH};
+
+    public BlockFace getHighSide() {
+        return DIRECTIONS[this.getDamage() & 0x03];
+    }
+
+    private static int directionIndex(BlockFace face) {
+        for (int i = 0; i < DIRECTIONS.length; i++) {
+            if (DIRECTIONS[i] == face) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private BlockStairs stairsAt(BlockFace side) {
+        Block b = this.getSide(side);
+        return b instanceof BlockStairs && ((b.getDamage() & 0x04) == (this.getDamage() & 0x04)) ? (BlockStairs) b : null;
+    }
+
+    /** Same rules as the official corner states (confirmed by the BDS capture of a pinwheel of four stairs). */
+    public int computeCorner() {
+        BlockFace facing = this.getHighSide();
+        BlockStairs front = this.stairsAt(facing);
+        if (front != null) {
+            BlockFace f2 = front.getHighSide();
+            if (f2.getAxis() != facing.getAxis() && !this.sameStairsAt(f2.getOpposite(), facing)) {
+                return f2 == facing.rotateYCCW() ? 3 : 4;
+            }
+        }
+        BlockStairs back = this.stairsAt(facing.getOpposite());
+        if (back != null) {
+            BlockFace f2 = back.getHighSide();
+            if (f2.getAxis() != facing.getAxis() && !this.sameStairsAt(f2, facing)) {
+                return f2 == facing.rotateYCCW() ? 1 : 2;
+            }
+        }
+        return 0;
+    }
+
+    /** True when the block at side is a stairs of the same half and with the given high side. */
+    private boolean sameStairsAt(BlockFace side, BlockFace highSide) {
+        BlockStairs s = this.stairsAt(side);
+        return s != null && s.getHighSide() == highSide;
+    }
+
+    /** Recalculates the corner of this block and of the four neighbours that are stairs. */
+    public void updateCorners() {
+        this.refreshCorner(this);
+        for (BlockFace face : BlockFace.Plane.HORIZONTAL) {
+            Block b = this.getSide(face);
+            if (b instanceof BlockStairs) {
+                this.refreshCorner((BlockStairs) b);
+            }
+        }
+    }
+
+    private void refreshCorner(BlockStairs s) {
+        int meta = (s.getDamage() & ~CORNER_MASK) | (s.computeCorner() << CORNER_SHIFT);
+        if (meta != s.getDamage()) {
+            s.setDamage(meta);
+            this.level.setBlock(s, s, true, true);
+        }
+    }
+
+    @Override
+    public int onUpdate(int type) {
+        if (type == Level.BLOCK_UPDATE_NORMAL) {
+            int meta = (this.getDamage() & ~CORNER_MASK) | (this.computeCorner() << CORNER_SHIFT);
+            if (meta != this.getDamage()) {
+                this.setDamage(meta);
+                this.level.setBlock(this, this, true, true);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public boolean onBreak(Item item) {
+        boolean r = super.onBreak(item);
+        for (BlockFace face : BlockFace.Plane.HORIZONTAL) {
+            Block b = this.getSide(face);
+            if (b instanceof BlockStairs) {
+                this.refreshCorner((BlockStairs) b);
+            }
+        }
+        return r;
+    }
+
+    /** Horizontal rectangle {minX, minZ, maxX, maxZ} of the half of the block on the given side. */
+    private static double[] half(BlockFace side) {
+        switch (side) {
+            case EAST: return new double[]{0.5, 0, 1, 1};
+            case WEST: return new double[]{0, 0, 0.5, 1};
+            case SOUTH: return new double[]{0, 0.5, 1, 1};
+            default: return new double[]{0, 0, 1, 0.5};
+        }
+    }
+
+    private static double[] quarter(BlockFace a, BlockFace b) {
+        double[] x = half(a);
+        double[] y = half(b);
+        return new double[]{Math.max(x[0], y[0]), Math.max(x[1], y[1]), Math.min(x[2], y[2]), Math.min(x[3], y[3])};
+    }
+
+    private boolean hits(AxisAlignedBB bb, double[] r, double y0, double y1) {
+        return bb.intersectsWith(new SimpleAxisAlignedBB(this.x + r[0], this.y + y0, this.z + r[1], this.x + r[2], this.y + y1, this.z + r[3]));
+    }
+
     @Override
     public boolean collidesWithBB(AxisAlignedBB bb) {
         int damage = this.getDamage();
-        int side = damage & 0x03;
-        double f = 0;
-        double f1 = 0.5;
-        double f2 = 0.5;
-        double f3 = 1;
-        if ((damage & 0x04) > 0) {
-            f = 0.5;
-            f1 = 1;
-            f2 = 0;
-            f3 = 0.5;
-        }
-
-        if (bb.intersectsWith(new SimpleAxisAlignedBB(
-                this.x,
-                this.y + f,
-                this.z,
-                this.x + 1,
-                this.y + f1,
-                this.z + 1
-        ))) {
+        boolean up = (damage & 0x04) > 0;
+        double baseMin = up ? 0.5 : 0;
+        double baseMax = up ? 1 : 0.5;
+        double stepMin = up ? 0 : 0.5;
+        double stepMax = up ? 0.5 : 1;
+        if (hits(bb, new double[]{0, 0, 1, 1}, baseMin, baseMax)) {
             return true;
         }
-
-
-        if (side == 0) {
-            return bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x + 0.5,
-                    this.y + f2,
-                    this.z,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 1
-            ));
-        } else if (side == 1) {
-            return bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z,
-                    this.x + 0.5,
-                    this.y + f3,
-                    this.z + 1
-            ));
-        } else if (side == 2) {
-            return bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z + 0.5,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 1
-            ));
-        } else if (side == 3) {
-            return bb.intersectsWith(new SimpleAxisAlignedBB(
-                    this.x,
-                    this.y + f2,
-                    this.z,
-                    this.x + 1,
-                    this.y + f3,
-                    this.z + 0.5
-            ));
+        BlockFace facing = this.getHighSide();
+        switch ((damage & CORNER_MASK) >> CORNER_SHIFT) {
+            case 1:
+                return hits(bb, half(facing), stepMin, stepMax) || hits(bb, quarter(facing.getOpposite(), facing.rotateYCCW()), stepMin, stepMax);
+            case 2:
+                return hits(bb, half(facing), stepMin, stepMax) || hits(bb, quarter(facing.getOpposite(), facing.rotateY()), stepMin, stepMax);
+            case 3:
+                return hits(bb, quarter(facing, facing.rotateYCCW()), stepMin, stepMax);
+            case 4:
+                return hits(bb, quarter(facing, facing.rotateY()), stepMin, stepMax);
+            default:
+                return hits(bb, half(facing), stepMin, stepMax);
         }
-
-        return false;
     }
 
     @Override
