@@ -9,7 +9,43 @@ import cn.nukkit.math.BlockFace;
 import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.Utils;
 
-public class BlockChorusPlant extends BlockTransparent {
+public class BlockChorusPlant extends BlockTransparentMeta {
+
+    public BlockChorusPlant() {
+        this(0);
+    }
+
+    public BlockChorusPlant(int meta) {
+        super(meta);
+    }
+
+    /** Meta bits are the official connection states: down 1, up 2, north 4, south 8, east 16, west 32. */
+    private static final BlockFace[] SIDES = {BlockFace.DOWN, BlockFace.UP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
+
+    /** A side connects to a chorus plant or flower; the bottom also to end stone (confirmed by the BDS capture). */
+    private int computeConnections() {
+        int meta = 0;
+        for (int i = 0; i < SIDES.length; i++) {
+            int id = getSide(SIDES[i]).getId();
+            if (id == CHORUS_PLANT || id == CHORUS_FLOWER || (i == 0 && id == END_STONE)) {
+                meta |= 1 << i;
+            }
+        }
+        return meta;
+    }
+
+    private void refreshConnections() {
+        int meta = computeConnections();
+        if (meta != getDamage()) {
+            setDamage(meta);
+            this.getLevel().setBlock(this, this, true, true);
+        }
+    }
+
+    @Override
+    public Item toItem() {
+        return new cn.nukkit.item.ItemBlock(Block.get(getId(), 0), 0);
+    }
 
     @Override
     public int getId() {
@@ -36,6 +72,7 @@ public class BlockChorusPlant extends BlockTransparent {
         if (!isSupportValid()) {
             return false;
         }
+        this.setDamage(computeConnections());
         return super.place(item, block, target, face, fx, fy, fz, player);
     }
 
@@ -75,6 +112,7 @@ public class BlockChorusPlant extends BlockTransparent {
                 this.getLevel().scheduleUpdate(this, 1);
                 return type;
             }
+            refreshConnections();
         } else if (type == Level.BLOCK_UPDATE_SCHEDULED) {
             this.getLevel().useBreakOn(this, null, null, true);
             return type;
