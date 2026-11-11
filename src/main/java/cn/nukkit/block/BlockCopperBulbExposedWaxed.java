@@ -3,7 +3,11 @@ package cn.nukkit.block;
 public class BlockCopperBulbExposedWaxed extends BlockCopperBulbExposed {
 
     public BlockCopperBulbExposedWaxed() {
-        // Does nothing
+        this(0);
+    }
+
+    public BlockCopperBulbExposedWaxed(int meta) {
+        super(meta);
     }
 
     @Override
