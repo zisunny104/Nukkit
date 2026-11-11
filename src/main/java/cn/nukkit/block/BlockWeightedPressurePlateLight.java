@@ -79,6 +79,11 @@ public class BlockWeightedPressurePlateLight extends BlockPressurePlateBase {
         }
     }
 
+    @Override
+    protected int getActivationDelay() {
+        return 10;
+    }
+
     public int getMaxWeight() {
         return 15;
     }
