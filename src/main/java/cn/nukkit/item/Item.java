@@ -157,15 +157,27 @@ public class Item implements Cloneable, BlockID, ItemID, ProtocolInfo {
             CREATIVE_ITEMS.addGroup(creativeGroup);
         }
 
+        java.util.List<String> skipped = new java.util.ArrayList<>();
+        java.util.List<String> fallback = new java.util.ArrayList<>();
         for (JsonElement element : itemsArray) {
             JsonObject creativeItem = element.getAsJsonObject();
             Item item = mapping.parseCreativeItem(creativeItem, true);
+            if (item != null && item.getName().equals(UNKNOWN_STR)) {
+                // No item class: keep it as a generic item named by its identifier
+                item.name = creativeItem.get("id").getAsString();
+                fallback.add(item.name);
+            } else if (item == null) {
+                skipped.add(creativeItem.has("id") ? creativeItem.get("id").getAsString() : "?");
+            }
 
-            // Add only implemented items
-            if (item != null && !item.getName().equals(UNKNOWN_STR)) {
+            if (item != null) {
                 CreativeItemGroup creativeGroup = CREATIVE_ITEMS.getGroups().get(creativeItem.get("groupId").getAsInt());
                 CREATIVE_ITEMS.add(item, creativeGroup);
             }
+        }
+
+        if (!skipped.isEmpty()) {
+            Server.getInstance().getLogger().info("Creative items not loaded (" + skipped.size() + "): " + String.join(", ", skipped));
         }
 
         // Custom items are registered before initCreativeItems, but we need groups ready before adding them here
@@ -353,6 +365,10 @@ public class Item implements Cloneable, BlockID, ItemID, ProtocolInfo {
                 try {
                     id = ItemID.class.getField(idStrUp).getInt(null);
                 } catch (Exception ignore1) {
+                    RuntimeItemMapping.LegacyEntry entry = RuntimeItems.getMapping().fromIdentifier("minecraft:" + idStr.toLowerCase(Locale.ROOT));
+                    if (entry != null) {
+                        id = entry.getLegacyId();
+                    }
                 }
             }
         }
