@@ -35,6 +35,6 @@ public class ItemHoeCopper extends ItemTool {
 
     @Override
     public int getEnchantAbility() {
-        return 8;
+        return 13;
     }
 }

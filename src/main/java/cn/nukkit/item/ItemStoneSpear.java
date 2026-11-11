@@ -16,7 +16,7 @@ public class ItemStoneSpear extends ItemTool {
 
     @Override
     public int getMaxDurability() {
-        return ItemTool.DURABILITY_STONE;
+        return 130;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class ItemStoneSpear extends ItemTool {
     @Override
     public int getAttackDamage() {
         return 2;
+    }
+
+    @Override
+    public int getEnchantAbility() {
+        return 5;
     }
 }
