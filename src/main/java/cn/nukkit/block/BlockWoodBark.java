@@ -62,6 +62,7 @@ public class BlockWoodBark extends BlockWood {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        //this.setPillarAxis(face.getAxis());
         return this.getLevel().setBlock(block, this, true, true);
     }
 }
