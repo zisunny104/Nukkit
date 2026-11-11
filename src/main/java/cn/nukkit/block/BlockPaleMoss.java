@@ -41,33 +41,43 @@ public class BlockPaleMoss extends BlockDirt {
 
     @Override
     public boolean onActivate(Item item, Player player) {
-        if (item.getId() != Item.DYE || item.getDamage() != ItemDye.BONE_MEAL || this.up().getId() != AIR) {
+        if (item.getId() != Item.DYE || item.getDamage() != ItemDye.BONE_MEAL) {
             return false;
         }
 
-        int random = ThreadLocalRandom.current().nextInt(13);
-        Block block;
-        Block block2 = null;
-        if (random < 5) {
-            block = Block.get(TALL_GRASS);
-        } else if (random < 8) {
-            block = Block.get(MOSS_CARPET);
-        } else if (random < 9) {
-            if (this.up(2).getId() != AIR) {
-                return false;
+        // Bone meal spreads a patch: nearby ground becomes pale moss, topped with carpet or grass.
+        // TODO: pale hanging moss under ceilings, patch shape and odds taken from the official game.
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                if (dx * dx + dz * dz > 10) {
+                    continue;
+                }
+                for (int dy = 2; dy >= -2; dy--) {
+                    Block ground = this.getLevel().getBlock(this.add(dx, dy, dz));
+                    Block above = ground.up();
+                    if (above.getId() != AIR) {
+                        continue;
+                    }
+                    if (!isReplaceableGround(ground.getId())) {
+                        break;
+                    }
+                    boolean center = dx == 0 && dz == 0 && dy == 0;
+                    if (!center && random.nextInt(10) >= 8) {
+                        break;
+                    }
+                    if (!center) {
+                        this.getLevel().setBlock(ground, Block.get(PALE_MOSS_BLOCK), false, true);
+                    }
+                    float roll = random.nextFloat();
+                    if (roll < 0.4f) {
+                        this.getLevel().setBlock(above, Block.get(PALE_MOSS_CARPET), false, true);
+                    } else if (roll < 0.55f) {
+                        this.getLevel().setBlock(above, Block.get(TALL_GRASS), false, true);
+                    }
+                    break;
+                }
             }
-
-            block = Block.get(DOUBLE_PLANT, BlockDoublePlant.TALL_GRASS);
-            block2 = Block.get(DOUBLE_PLANT, BlockDoublePlant.TALL_GRASS ^ BlockDoublePlant.TOP_HALF_BITMASK);
-        } else if (random < 11) {
-            block = Block.get(AZALEA);
-        } else {
-            block = Block.get(FLOWERING_AZALEA);
-        }
-
-        this.getLevel().setBlock(this.up(), block, false, true);
-        if (block2 != null) {
-            this.getLevel().setBlock(this.up(2), block2, false, true);
         }
 
         this.level.addParticle(new BoneMealParticle(this));
@@ -76,6 +86,11 @@ public class BlockPaleMoss extends BlockDirt {
             item.count--;
         }
         return true;
+    }
+
+    private static boolean isReplaceableGround(int id) {
+        return id == STONE || id == DIRT || id == GRASS || id == PODZOL || id == MYCELIUM || id == GRAVEL || id == DEEPSLATE
+                || id == MOSS_BLOCK || id == PALE_MOSS_BLOCK;
     }
 
     @Override
