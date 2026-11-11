@@ -96,9 +96,50 @@ public class BlockRedstoneTorch extends BlockTorch implements Faceable {
         return 0;
     }
 
+    /** Turn-off ticks of the torches that switched recently, per level and position. */
+    private static final java.util.Map<Level, it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap<it.unimi.dsi.fastutil.ints.IntArrayList>> TOGGLES =
+            java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
+    private static final int BURNOUT_TOGGLES = 8;
+    private static final int BURNOUT_WINDOW = 60;
+
+    /**
+     * A torch that turned off 8 times within 60 ticks burns out and stays off until it cools down.
+     *
+     * @param record true when the torch turns off now
+     */
+    static boolean isBurnedOut(Block b, boolean record) {
+        int now = (int) b.level.getCurrentTick();
+        long key = (((long) b.getFloorX() & 0x3FFFFFF) << 38) | (((long) b.getFloorZ() & 0x3FFFFFF) << 12) | (b.getFloorY() & 0xFFF);
+        it.unimi.dsi.fastutil.ints.IntArrayList list;
+        synchronized (TOGGLES) {
+            it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap<it.unimi.dsi.fastutil.ints.IntArrayList> map =
+                    TOGGLES.computeIfAbsent(b.level, l -> new it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap<>());
+            list = map.get(key);
+            if (list == null) {
+                if (!record) {
+                    return false;
+                }
+                list = new it.unimi.dsi.fastutil.ints.IntArrayList();
+                map.put(key, list);
+            }
+            if (record) {
+                list.add(now);
+            }
+            while (!list.isEmpty() && now - list.getInt(0) > BURNOUT_WINDOW) {
+                list.removeInt(0);
+            }
+            if (list.isEmpty()) {
+                map.remove(key);
+                return false;
+            }
+            return list.size() >= BURNOUT_TOGGLES;
+        }
+    }
+
     protected boolean checkState() {
         if (isPoweredFromSide()) {
             BlockFace face = getBlockFace().getOpposite();
+            isBurnedOut(this, true);
 
             this.level.setBlock(this, Block.get(UNLIT_REDSTONE_TORCH, getDamage()), false, true);
 

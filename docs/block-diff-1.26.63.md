@@ -63,3 +63,8 @@ No item class yet (TODO, items not blocks in the new-block groups): minecraft:pi
 Done in feature/redstone-bulb-rod: copper bulb (lit and powered, toggles on a rising power edge, light by oxidation level; the lit/powered states did not exist before) and lightning rod (powered bit in the palette only, the core does not power it when struck, TODO).
 
 Buttons, pressure plates, levers, rails, hoppers, droppers, dispensers, observers, pistons, torches and repeaters/comparators have at least the official number of states in the palette (the core palette has extra padding states). Not yet checked in code, needs a capture or a reading pass: charging directions, scheduled delays, strong versus weak power, piston push limits and block entity, observer pulse, hopper locking, daylight detector inversion, target block signal, sculk sensor, calibrated sculk sensor (1/3 and 1/12 states, no behavior), crafter (1/48, no behavior).
+
+## Redstone check summary
+
+- Redstone wire mask change traced by reading: the signal is read only through `getPower()` (wire, `getWeakPower`, `getMaxCurrentStrength`) or `& 0x0F` (`BlockRedstoneDiode`, the only other reader of a wire's data). Repeater -> wire -> lamp goes through `getWeakPower` / `getRedstonePower`, none of which touches the connection bits. Connection refresh only writes when the bits change, so it cannot loop. No code unit test was run.
+- Not individually audited by reading: comparator, detector/powered/activator rails, dropper, dispenser, hopper, note block, target block, daylight detector, quasi-connectivity, observer direction (needs a capture).
