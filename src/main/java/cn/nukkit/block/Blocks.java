@@ -746,5 +746,17 @@ class Blocks {
         list[WAXED_EXPOSED_COPPER_TRAPDOOR] = BlockCopperTrapdoorExposedWaxed.class; //1052
         list[WAXED_WEATHERED_COPPER_TRAPDOOR] = BlockCopperTrapdoorWeatheredWaxed.class; //1053
         list[WAXED_OXIDIZED_COPPER_TRAPDOOR] = BlockCopperTrapdoorOxidizedWaxed.class; //1054
+        list[WILDFLOWERS] = BlockWildflowers.class; //1055
+        list[LEAF_LITTER] = BlockLeafLitter.class; //1056
+        list[FIREFLY_BUSH] = BlockFireflyBush.class; //1057
+        list[CACTUS_FLOWER] = BlockCactusFlower.class; //1058
+        list[BUSH_BLOCK] = BlockBush.class; //1059
+        list[SHORT_DRY_GRASS] = BlockShortDryGrass.class; //1060
+        list[TALL_DRY_GRASS] = BlockTallDryGrass.class; //1061
+        list[CLOSED_EYEBLOSSOM] = BlockClosedEyeblossom.class; //1062
+        list[OPEN_EYEBLOSSOM] = BlockOpenEyeblossom.class; //1063
+        list[GOLDEN_DANDELION] = BlockGoldenDandelion.class; //1064
+        list[RED_SHRUB] = BlockRedShrub.class; //1065
+        list[SHELF_MUSHROOM] = BlockShelfMushroom.class; //1066
     }
 }

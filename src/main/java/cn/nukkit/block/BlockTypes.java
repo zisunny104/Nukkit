@@ -802,6 +802,18 @@ public class BlockTypes {
     public static final BlockType WAXED_EXPOSED_COPPER_TRAPDOOR = register("minecraft:waxed_exposed_copper_trapdoor", BlockID.WAXED_EXPOSED_COPPER_TRAPDOOR);
     public static final BlockType WAXED_WEATHERED_COPPER_TRAPDOOR = register("minecraft:waxed_weathered_copper_trapdoor", BlockID.WAXED_WEATHERED_COPPER_TRAPDOOR);
     public static final BlockType WAXED_OXIDIZED_COPPER_TRAPDOOR = register("minecraft:waxed_oxidized_copper_trapdoor", BlockID.WAXED_OXIDIZED_COPPER_TRAPDOOR);
+    public static final BlockType WILDFLOWERS = register("minecraft:wildflowers", BlockID.WILDFLOWERS);
+    public static final BlockType LEAF_LITTER = register("minecraft:leaf_litter", BlockID.LEAF_LITTER);
+    public static final BlockType FIREFLY_BUSH = register("minecraft:firefly_bush", BlockID.FIREFLY_BUSH);
+    public static final BlockType CACTUS_FLOWER = register("minecraft:cactus_flower", BlockID.CACTUS_FLOWER);
+    public static final BlockType BUSH_BLOCK = register("minecraft:bush", BlockID.BUSH_BLOCK);
+    public static final BlockType SHORT_DRY_GRASS = register("minecraft:short_dry_grass", BlockID.SHORT_DRY_GRASS);
+    public static final BlockType TALL_DRY_GRASS = register("minecraft:tall_dry_grass", BlockID.TALL_DRY_GRASS);
+    public static final BlockType CLOSED_EYEBLOSSOM = register("minecraft:closed_eyeblossom", BlockID.CLOSED_EYEBLOSSOM);
+    public static final BlockType OPEN_EYEBLOSSOM = register("minecraft:open_eyeblossom", BlockID.OPEN_EYEBLOSSOM);
+    public static final BlockType GOLDEN_DANDELION = register("minecraft:golden_dandelion", BlockID.GOLDEN_DANDELION);
+    public static final BlockType RED_SHRUB = register("minecraft:red_shrub", BlockID.RED_SHRUB);
+    public static final BlockType SHELF_MUSHROOM = register("minecraft:shelf_mushroom", BlockID.SHELF_MUSHROOM);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));
