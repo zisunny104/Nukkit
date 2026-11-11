@@ -32,6 +32,20 @@ public abstract class BlockShelf extends BlockTransparentMeta implements Faceabl
     }
 
     @Override
+    public int onUpdate(int type) {
+        if (type == cn.nukkit.level.Level.BLOCK_UPDATE_NORMAL || type == cn.nukkit.level.Level.BLOCK_UPDATE_REDSTONE) {
+            // BDS capture: powered_bit follows redstone power; powered_shelf_type (links between shelves) was always 0 there, TODO
+            boolean powered = this.level.isBlockPowered(this);
+            if (powered != ((this.getDamage() & 0x04) != 0)) {
+                this.setDamage(powered ? this.getDamage() | 0x04 : this.getDamage() & ~0x04);
+                this.level.setBlock(this, this, true, true);
+            }
+            return type;
+        }
+        return 0;
+    }
+
+    @Override
     public double getHardness() {
         return 2;
     }
