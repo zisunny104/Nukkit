@@ -37,7 +37,8 @@ public enum InventoryType {
     DONKEY(15, "Donkey", 12), //15 CONTAINER
     SMITHING_TABLE(3, "Smithing Table", 33),
     LECTERN(0, "Lectern", 25),
-    GRINDSTONE(3, "Grindstone", 26);
+    GRINDSTONE(3, "Grindstone", 26),
+    CRAFTER(9, "Crafter", 36); //9 CONTAINER
 
     private final int size;
     private final String title;

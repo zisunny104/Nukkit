@@ -715,6 +715,28 @@ public class CraftingManager {
         return null;
     }
 
+    /**
+     * Finds a crafting recipe from the ingredients alone, as a crafter block does (no primary output is known).
+     * Positions are not checked, only the ingredient totals.
+     */
+    public CraftingRecipe matchRecipeByInputs(List<Item> inputList) {
+        for (Map<UUID, ShapedRecipe> recipes : this.shapedRecipes.values()) {
+            for (ShapedRecipe recipe : recipes.values()) {
+                if (recipe.matchItems(new ArrayList<>(inputList), new ArrayList<>(recipe.getExtraResults()))) {
+                    return recipe;
+                }
+            }
+        }
+        for (Map<UUID, ShapelessRecipe> recipes : this.shapelessRecipes.values()) {
+            for (ShapelessRecipe recipe : recipes.values()) {
+                if (recipe.matchItems(new ArrayList<>(inputList), new ArrayList<>(recipe.getExtraResults()))) {
+                    return recipe;
+                }
+            }
+        }
+        return null;
+    }
+
     public FurnaceRecipe matchFurnaceRecipe(Item input) {
         FurnaceRecipe recipe = this.furnaceRecipes.get(getItemHash(input));
         if (recipe == null) {
