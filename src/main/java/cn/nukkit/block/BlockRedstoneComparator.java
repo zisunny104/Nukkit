@@ -95,14 +95,12 @@ public abstract class BlockRedstoneComparator extends BlockRedstoneDiode {
     protected boolean shouldBePowered() {
         int input = this.calculateInputStrength();
 
-        if (input >= 15) {
-            return true;
-        } else if (input == 0) {
+        if (input == 0) {
             return false;
-        } else {
-            int sidePower = this.getPowerOnSides();
-            return sidePower == 0 || input >= sidePower;
         }
+        int sidePower = this.getPowerOnSides();
+        // stronger input always powers; equal input only in compare mode (in subtract mode the output would be 0)
+        return input > sidePower || (input == sidePower && getMode() == Mode.COMPARE);
     }
 
     private int calculateOutput() {
