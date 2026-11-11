@@ -112,8 +112,32 @@ public class BlockTripWire extends BlockFlowable {
         }
     }
 
+    /** Data bits 4-7 are the official connection states north, east, south, west: a trip wire or a hook that faces this wire. */
+    private void refreshConnections() {
+        if (this.level == null || this.level.getProvider() instanceof cn.nukkit.level.format.anvil.Anvil) {
+            return;
+        }
+        int meta = this.getDamage() & 0x0F;
+        BlockFace[] faces = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+        for (int i = 0; i < faces.length; i++) {
+            Block side = this.getSideIfLoaded(faces[i]);
+            if (side instanceof BlockTripWire
+                    || (side instanceof BlockTripWireHook && ((BlockTripWireHook) side).getFacing() == faces[i].getOpposite())) {
+                meta |= 1 << (4 + i);
+            }
+        }
+        if (meta != this.getDamage()) {
+            this.setDamage(meta);
+            this.level.setBlock(this, this, true, true);
+        }
+    }
+
     @Override
     public int onUpdate(int type) {
+        if (type == Level.BLOCK_UPDATE_NORMAL) {
+            this.refreshConnections();
+            return 0;
+        }
         if (type == Level.BLOCK_UPDATE_SCHEDULED) {
             if (!isPowered()) {
                 return type;
@@ -145,6 +169,7 @@ public class BlockTripWire extends BlockFlowable {
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         this.getLevel().setBlock(this, this, true, true);
+        this.refreshConnections();
         this.updateHook(false);
 
         return true;

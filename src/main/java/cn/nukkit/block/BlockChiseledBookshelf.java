@@ -19,6 +19,11 @@ public class BlockChiseledBookshelf extends BlockSolidMeta {
         super(meta);
     }
 
+    /*
+     * Data bits 0-1 are the direction, bits 2-7 the books_stored state (one bit per slot).
+     * TODO: putting in and taking out books is not implemented yet, so the slot bits stay 0; the direction rule
+     * (facing the player) is assumed, not captured.
+     */
     @Override
     public String getName() {
         return "Chiseled Bookshelf";
@@ -79,6 +84,7 @@ public class BlockChiseledBookshelf extends BlockSolidMeta {
 
     @Override
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
+        this.setDamage((player != null ? player.getDirection().getOpposite().getHorizontalIndex() : 0) & 0x03);
         if (this.getLevel().setBlock(this, this, true, true)) {
             BlockEntity.createBlockEntity(BlockEntity.CHISELED_BOOKSHELF, this.getChunk(), BlockEntity.getDefaultCompound(this, BlockEntity.CHISELED_BOOKSHELF));
             return true;
