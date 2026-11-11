@@ -32,8 +32,13 @@ public abstract class BlockHangingSign extends BlockTransparentMeta {
             int direction = player != null ? (int) Math.floor((player.yaw + 180) * 16 / 360 + 0.5) & 0x0f : 0;
             this.setDamage(HANGING_OFFSET + direction * GROUND_DIRECTION_STEP);
         } else {
-            // the captured wall placement on a north face has facing_direction 4, the sign runs along the wall
-            this.setDamage(face.getAxis() == BlockFace.Axis.Z ? 4 : 2);
+            // BDS capture: clicked face north 5, east 3, south 4, west 2 (facing_direction, not attached, not hanging)
+            switch (face) {
+                case NORTH: this.setDamage(5); break;
+                case EAST: this.setDamage(3); break;
+                case SOUTH: this.setDamage(4); break;
+                default: this.setDamage(2); break;
+            }
         }
 
         if (!this.getLevel().setBlock(block, this, true, true)) {
