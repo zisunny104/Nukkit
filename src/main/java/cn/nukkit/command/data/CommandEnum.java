@@ -28,18 +28,33 @@ public class CommandEnum {
     public static final CommandEnum ENUM_EFFECTS;
 
     static {
-        ImmutableList.Builder<String> blocks = ImmutableList.builder();
+        // Official names from runtime_item_states.json (negative runtime id = block item), plus the old field names as aliases
+        java.util.LinkedHashSet<String> blockNames = new java.util.LinkedHashSet<>();
+        java.util.LinkedHashSet<String> itemNames = new java.util.LinkedHashSet<>();
         for (Field field : BlockID.class.getDeclaredFields()) {
-            blocks.add(field.getName().toLowerCase(Locale.ROOT));
+            blockNames.add(field.getName().toLowerCase(Locale.ROOT));
         }
-        ENUM_BLOCK = new CommandEnum("Block", blocks.build());
-
-        ImmutableList.Builder<String> items = ImmutableList.builder();
         for (Field field : ItemID.class.getDeclaredFields()) {
-            items.add(field.getName().toLowerCase(Locale.ROOT));
+            itemNames.add(field.getName().toLowerCase(Locale.ROOT));
         }
-        items.addAll(ENUM_BLOCK.getValues());
-        ENUM_ITEM = new CommandEnum("Item", items.build());
+        itemNames.addAll(blockNames);
+        try {
+            for (com.google.gson.JsonElement element : cn.nukkit.utils.Utils.loadJsonResource("runtime_item_states.json").getAsJsonArray()) {
+                com.google.gson.JsonObject entry = element.getAsJsonObject();
+                String name = entry.get("name").getAsString();
+                if (name.startsWith("minecraft:")) {
+                    name = name.substring("minecraft:".length());
+                }
+                itemNames.add(name);
+                if (entry.get("id").getAsInt() < 0) {
+                    blockNames.add(name);
+                }
+            }
+        } catch (Exception ignore) {
+            // keep the field name aliases only
+        }
+        ENUM_BLOCK = new CommandEnum("Block", ImmutableList.copyOf(blockNames));
+        ENUM_ITEM = new CommandEnum("Item", ImmutableList.copyOf(itemNames));
 
         ImmutableList.Builder<String> effects = ImmutableList.builder();
         for (Field field : Effect.class.getDeclaredFields()) {
