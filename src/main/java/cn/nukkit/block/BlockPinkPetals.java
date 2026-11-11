@@ -52,6 +52,27 @@ public class BlockPinkPetals extends BlockFlowable {
         return false;
     }
 
+    @Override
+    public boolean onActivate(Item item, Player player) {
+        if (item.getId() == Item.DYE && item.getDamage() == cn.nukkit.item.ItemDye.BONE_MEAL) {
+            if (player != null && !player.isCreative()) {
+                item.count--;
+            }
+            this.level.addParticle(new cn.nukkit.level.particle.BoneMealParticle(this));
+            int growth = (this.getDamage() & GROWTH_MASK) >> 2;
+            if (growth < 3) {
+                this.setDamage((this.getDamage() & ~GROWTH_MASK) | ((growth + 1) << 2));
+                this.getLevel().setBlock(this, this, true, true);
+            } else {
+                Item drop = this.toItem();
+                drop.setCount(1);
+                this.level.dropItem(this.add(0.5, 0.5, 0.5), drop);
+            }
+            return true;
+        }
+        return false;
+    }
+
     protected boolean canStandOn(Block down) {
         int id = down.getId();
         return id == Block.GRASS || id == Block.DIRT || id == Block.FARMLAND || id == Block.PODZOL || id == MYCELIUM || id == MOSS_BLOCK || id == MUD || id == MUDDY_MANGROVE_ROOTS;
