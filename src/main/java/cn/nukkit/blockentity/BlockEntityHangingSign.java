@@ -4,10 +4,15 @@ import cn.nukkit.block.BlockID;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
-public class BlockEntityHangingSign extends BlockEntity {
+public class BlockEntityHangingSign extends BlockEntitySign {
 
     public BlockEntityHangingSign(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
+    }
+
+    @Override
+    protected String getSignId() {
+        return BlockEntity.HANGING_SIGN;
     }
 
     @Override
