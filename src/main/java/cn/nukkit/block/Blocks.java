@@ -632,7 +632,7 @@ class Blocks {
         list[MANGROVE_WOOD] = BlockMangroveWood.class; //752
         list[STRIPPED_MANGROVE_WOOD] = BlockMangroveWoodStripped.class; //753
         list[MANGROVE_DOUBLE_SLAB] = BlockDoubleSlabMangrove.class; //754
-        /*list[OAK_HANGING_SIGN] = BlockOakHangingSign.class; //755
+        list[OAK_HANGING_SIGN] = BlockOakHangingSign.class; //755
         list[SPRUCE_HANGING_SIGN] = BlockSpruceHangingSign.class; //756
         list[BIRCH_HANGING_SIGN] = BlockBirchHangingSign.class; //757
         list[JUNGLE_HANGING_SIGN] = BlockJungleHangingSign.class; //758
@@ -640,7 +640,7 @@ class Blocks {
         list[DARK_OAK_HANGING_SIGN] = BlockDarkOakHangingSign.class; //760
         list[CRIMSON_HANGING_SIGN] = BlockCrimsonHangingSign.class; //761
         list[WARPED_HANGING_SIGN] = BlockWarpedHangingSign.class; //762
-        list[MANGROVE_HANGING_SIGN] = BlockMangroveHangingSign.class; //763*/
+        list[MANGROVE_HANGING_SIGN] = BlockMangroveHangingSign.class; //763
         list[BAMBOO_MOSAIC] = BlockBambooMosaic.class; //764
         list[BAMBOO_PLANKS] = BlockBambooPlanks.class; //765
         list[BAMBOO_BUTTON] = BlockBambooButton.class; //766
@@ -654,7 +654,7 @@ class Blocks {
         list[BAMBOO_WALL_SIGN] = BlockBambooWallSign.class; //774
         list[BAMBOO_TRAPDOOR] = BlockBambooTrapdoor.class; //775
         list[BAMBOO_DOUBLE_SLAB] = BlockBambooDoubleSlab.class; //776
-        //list[BAMBOO_HANGING_SIGN] = BlockBambooHangingSign.class; //777
+        list[BAMBOO_HANGING_SIGN] = BlockBambooHangingSign.class; //777
         list[BAMBOO_MOSAIC_STAIRS] = BlockBambooMosaicStairs.class; //778
         list[BAMBOO_MOSAIC_SLAB] = BlockBambooMosaicSlab.class; //779
         list[BAMBOO_MOSAIC_DOUBLE_SLAB] = BlockBambooMosaicDoubleSlab.class; //780
@@ -666,7 +666,7 @@ class Blocks {
         list[CHERRY_DOOR_BLOCK] = BlockCherryDoor.class; //786
         list[CHERRY_FENCE] = BlockCherryFence.class; //787
         list[CHERRY_FENCE_GATE] = BlockCherryFenceGate.class; //788
-        //list[CHERRY_HANGING_SIGN] = BlockCherryHangingSign.class; //789
+        list[CHERRY_HANGING_SIGN] = BlockCherryHangingSign.class; //789
         list[STRIPPED_CHERRY_LOG] = BlockStrippedCherryLog.class; //790
         list[CHERRY_LOG] = BlockCherryLog.class; //791
         list[CHERRY_PLANKS] = BlockCherryPlanks.class; //792
