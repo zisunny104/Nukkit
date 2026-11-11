@@ -56,8 +56,27 @@ public class BlockDaylightDetector extends BlockTransparent {
 
     @Override
     public int getWeakPower(BlockFace face) {
-        int time = level.getTime() % Level.TIME_FULL;
-        return time < 13184 || time > 22800 ? 15 : 0;
+        return this.getSunPower();
+    }
+
+    /**
+     * Signal strength follows the sun angle (0-15), reduced by rain and thunder.
+     */
+    protected int getSunPower() {
+        double d0 = ((level.getTime() % Level.TIME_FULL) / (double) Level.TIME_FULL - 0.25D);
+        d0 -= Math.floor(d0);
+        double d1 = 0.5D - Math.cos(d0 * Math.PI) / 2.0D;
+        double angle = (d0 + (d1 - d0) / 3.0D) * 2.0D * Math.PI;
+        int sky = 15;
+        if (level.isThundering()) {
+            sky = 10;
+        } else if (level.isRaining()) {
+            sky = 12;
+        }
+        double f1 = angle < Math.PI ? 0.0D : 2.0D * Math.PI;
+        angle += (f1 - angle) * 0.2D;
+        int power = (int) Math.round(sky * Math.cos(angle));
+        return Math.max(0, Math.min(15, power));
     }
 
     @Override
