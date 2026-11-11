@@ -951,9 +951,16 @@ public class Level implements ChunkManager, Metadatable, GeneratorTaskFactory {
                 return;
             }
 
-            int bId = this.getBlockIdAt(vector.getFloorX(), vector.getFloorY(), vector.getFloorZ());
-            if (bId != Block.TALL_GRASS && bId != Block.WATER)
-                vector.y += 1;
+            cn.nukkit.block.BlockLightningRod rod = this.findLightningRod(chunk);
+            if (rod != null) {
+                // lightning rods attract strikes from the surrounding chunks
+                vector = new Vector3(rod.x + 0.5, rod.y + 1, rod.z + 0.5);
+                rod.strike();
+            } else {
+                int bId = this.getBlockIdAt(vector.getFloorX(), vector.getFloorY(), vector.getFloorZ());
+                if (bId != Block.TALL_GRASS && bId != Block.WATER)
+                    vector.y += 1;
+            }
             CompoundTag nbt = new CompoundTag()
                     .putList(new ListTag<DoubleTag>("Pos").add(new DoubleTag("", vector.x))
                             .add(new DoubleTag("", vector.y)).add(new DoubleTag("", vector.z)))
@@ -971,6 +978,28 @@ public class Level implements ChunkManager, Metadatable, GeneratorTaskFactory {
                 bolt.setEffect(false);
             }
         }
+    }
+
+    private cn.nukkit.block.BlockLightningRod findLightningRod(FullChunk chunk) {
+        for (int cx = chunk.getX() - 1; cx <= chunk.getX() + 1; cx++) {
+            for (int cz = chunk.getZ() - 1; cz <= chunk.getZ() + 1; cz++) {
+                if (!this.isChunkLoaded(cx, cz)) {
+                    continue;
+                }
+                for (int x = cx << 4; x < (cx << 4) + 16; x++) {
+                    for (int z = cz << 4; z < (cz << 4) + 16; z++) {
+                        int y = this.getHighestBlockAt(x, z);
+                        for (int dy = 1; dy >= -1; dy--) {
+                            Block block = this.getBlock(x, y + dy, z);
+                            if (block instanceof cn.nukkit.block.BlockLightningRod) {
+                                return (cn.nukkit.block.BlockLightningRod) block;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public Vector3 adjustPosToNearbyEntity(Vector3 pos) {

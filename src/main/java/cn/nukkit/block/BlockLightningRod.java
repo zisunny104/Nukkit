@@ -108,7 +108,63 @@ public class BlockLightningRod extends BlockTransparentMeta implements CopperFam
 
     @Override
     public int onUpdate(int type) {
+        if (type == cn.nukkit.level.Level.BLOCK_UPDATE_SCHEDULED) {
+            // power ran out
+            if (!this.isStruck()) {
+                this.level.updateAroundRedstone(this, null);
+                this.level.updateAroundRedstone(this.getSide(this.getFacing().getOpposite()), null);
+            }
+            return type;
+        }
         int result = CopperFamily.super.onUpdate(type);
         return result != 0 ? result : super.onUpdate(type);
+    }
+
+    /**
+     * Lightning rods are powered for 8 ticks after a strike. The state is kept in memory only
+     * (the power bit is not part of the block meta mapping yet).
+     */
+    private static final java.util.Map<Long, Long> STRUCK_UNTIL = new java.util.concurrent.ConcurrentHashMap<>();
+
+    private long key() {
+        return ((long) this.getFloorX() & 0x3ffffffL) << 38 | ((long) this.getFloorZ() & 0x3ffffffL) << 12 | ((long) this.getFloorY() & 0xfffL);
+    }
+
+    public boolean isStruck() {
+        Long until = STRUCK_UNTIL.get(this.key());
+        if (until == null) {
+            return false;
+        }
+        if (until <= this.level.getCurrentTick()) {
+            STRUCK_UNTIL.remove(this.key());
+            return false;
+        }
+        return true;
+    }
+
+    public void strike() {
+        STRUCK_UNTIL.put(this.key(), this.level.getCurrentTick() + 8);
+        this.level.updateAroundRedstone(this, null);
+        this.level.updateAroundRedstone(this.getSide(this.getFacing().getOpposite()), null);
+        this.level.scheduleUpdate(this, 8);
+    }
+
+    public BlockFace getFacing() {
+        return BlockFace.fromIndex(this.getDamage() & 0x7);
+    }
+
+    @Override
+    public boolean isPowerSource() {
+        return true;
+    }
+
+    @Override
+    public int getWeakPower(BlockFace face) {
+        return this.isStruck() ? 15 : 0;
+    }
+
+    @Override
+    public int getStrongPower(BlockFace face) {
+        return this.isStruck() && face == this.getFacing() ? 15 : 0;
     }
 }
