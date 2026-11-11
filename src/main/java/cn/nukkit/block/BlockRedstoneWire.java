@@ -50,6 +50,7 @@ public class BlockRedstoneWire extends BlockFlowable {
 
         this.getLevel().setBlock(block, this, true, false);
         this.calculateCurrentChanges(true);
+        this.refreshConnections();
 
         for (BlockFace blockFace : Plane.VERTICAL) {
             this.level.updateAroundRedstone(this.getSideVec(blockFace), blockFace.getOpposite());
@@ -81,8 +82,42 @@ public class BlockRedstoneWire extends BlockFlowable {
         }
     }
 
+    /** Data bits 0-3 are the signal strength, bits 4-11 the official connections north, east, south, west (none 0, side 1, up 2, two bits each). */
+    private static final int POWER_MASK = 0x0F;
+    private static final int CONNECTION_SHIFT = 4;
+    private static final BlockFace[] CONNECTION_FACES = {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+
+    /** The signal strength; getDamage() also holds the connection bits. */
+    public int getPower() {
+        return this.getDamage() & POWER_MASK;
+    }
+
+    private void refreshConnections() {
+        if (this.level == null || this.level.getProvider() instanceof cn.nukkit.level.format.anvil.Anvil) {
+            return;
+        }
+        int meta = this.getPower();
+        boolean upFree = !this.up().isNormalBlock();
+        for (int i = 0; i < CONNECTION_FACES.length; i++) {
+            BlockFace face = CONNECTION_FACES[i];
+            Block sideBlock = this.getSide(face);
+            boolean normal = sideBlock.isNormalBlock();
+            int state = 0;
+            if (normal && upFree && canConnectUpwardsTo(sideBlock.up())) {
+                state = 2;
+            } else if (canConnectTo(sideBlock, face) || (!normal && canConnectUpwardsTo(sideBlock.down()))) {
+                state = 1;
+            }
+            meta |= state << (CONNECTION_SHIFT + i * 2);
+        }
+        if (meta != this.getDamage()) {
+            this.setDamage(meta);
+            this.level.setBlock(this, this, true, true);
+        }
+    }
+
     private void calculateCurrentChanges(boolean force) {
-        int meta = this.getDamage();
+        int meta = this.getPower();
         int maxStrength = meta;
         this.canProvidePower = false;
         int power = this.getIndirectPower();
@@ -131,7 +166,7 @@ public class BlockRedstoneWire extends BlockFlowable {
         if (meta != maxStrength) {
             this.level.getServer().getPluginManager().callEvent(new BlockRedstoneEvent(this, meta, maxStrength));
 
-            this.setDamage(maxStrength);
+            this.setDamage((this.getDamage() & ~POWER_MASK) | maxStrength);
             this.level.setBlock(this, this, false, false);
 
             this.level.updateAroundRedstone(this, null);
@@ -149,7 +184,7 @@ public class BlockRedstoneWire extends BlockFlowable {
         if (this.level.getBlockIdAt(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ()) != REDSTONE_WIRE) {
             return maxStrength;
         } else {
-            int strength = this.level.getBlockDataAt(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ());
+            int strength = this.level.getBlockDataAt(pos.getFloorX(), pos.getFloorY(), pos.getFloorZ()) & POWER_MASK;
             return Math.max(strength, maxStrength);
         }
     }
@@ -210,6 +245,7 @@ public class BlockRedstoneWire extends BlockFlowable {
         }
 
         this.calculateCurrentChanges(false);
+        this.refreshConnections();
 
         return Level.BLOCK_UPDATE_REDSTONE;
     }
@@ -226,7 +262,7 @@ public class BlockRedstoneWire extends BlockFlowable {
         if (!this.canProvidePower) {
             return 0;
         } else {
-            int power = this.getDamage();
+            int power = this.getPower();
 
             if (power == 0) {
                 return 0;
