@@ -57,7 +57,69 @@ public class BlockPumpkin extends BlockSolidMeta implements Faceable {
     public boolean place(Item item, Block block, Block target, BlockFace face, double fx, double fy, double fz, Player player) {
         this.setBlockFace(player != null ? player.getDirection().getOpposite() : BlockFace.SOUTH);
         this.getLevel().setBlock(block, this, true, true);
+        if (this.getId() == CARVED_PUMPKIN || this.getId() == LIT_PUMPKIN) {
+            this.trySpawnGolem(player);
+        }
         return true;
+    }
+
+    /**
+     * Build a golem when the head is placed: snow golem (2 snow blocks), iron golem (T of 4 iron blocks),
+     * copper golem (1 copper block; carved pumpkin only).
+     */
+    protected void trySpawnGolem(Player player) {
+        this.golemYaw = player != null ? player.getYaw() : 0;
+        int x = this.getFloorX();
+        int y = this.getFloorY();
+        int z = this.getFloorZ();
+        cn.nukkit.level.Level level = this.getLevel();
+
+        if (level.getBlockIdAt(x, y - 1, z) == SNOW_BLOCK && level.getBlockIdAt(x, y - 2, z) == SNOW_BLOCK) {
+            this.clearGolemBlocks(x, y, z, 0, -1, 0, 0, -2, 0);
+            this.spawnGolem("SnowGolem", x + 0.5, y - 2, z + 0.5);
+            return;
+        }
+
+        if (level.getBlockIdAt(x, y - 1, z) == IRON_BLOCK && level.getBlockIdAt(x, y - 2, z) == IRON_BLOCK
+                && level.getBlockIdAt(x, y - 3, z) == IRON_BLOCK) {
+            if (level.getBlockIdAt(x - 1, y - 2, z) == IRON_BLOCK && level.getBlockIdAt(x + 1, y - 2, z) == IRON_BLOCK) {
+                this.clearGolemBlocks(x, y, z, 0, -1, 0, 0, -2, 0, 0, -3, 0, -1, -2, 0, 1, -2, 0);
+                this.spawnGolem("IronGolem", x + 0.5, y - 3, z + 0.5);
+                return;
+            }
+            if (level.getBlockIdAt(x, y - 2, z - 1) == IRON_BLOCK && level.getBlockIdAt(x, y - 2, z + 1) == IRON_BLOCK) {
+                this.clearGolemBlocks(x, y, z, 0, -1, 0, 0, -2, 0, 0, -3, 0, 0, -2, -1, 0, -2, 1);
+                this.spawnGolem("IronGolem", x + 0.5, y - 3, z + 0.5);
+                return;
+            }
+        }
+
+        if (this.getId() == CARVED_PUMPKIN && isCopperBlock(level.getBlockIdAt(x, y - 1, z))) {
+            this.clearGolemBlocks(x, y, z, 0, -1, 0);
+            this.spawnGolem("CopperGolem", x + 0.5, y - 1, z + 0.5);
+        }
+    }
+
+    private double golemYaw;
+
+    private static boolean isCopperBlock(int id) {
+        return id >= COPPER_BLOCK && id <= WAXED_WEATHERED_COPPER || id == WAXED_OXIDIZED_COPPER;
+    }
+
+    private void clearGolemBlocks(int x, int y, int z, int... offsets) {
+        cn.nukkit.level.Level level = this.getLevel();
+        level.setBlock(new cn.nukkit.math.Vector3(x, y, z), Block.get(AIR), true, false);
+        for (int i = 0; i + 2 < offsets.length; i += 3) {
+            level.setBlock(new cn.nukkit.math.Vector3(x + offsets[i], y + offsets[i + 1], z + offsets[i + 2]), Block.get(AIR), true, false);
+        }
+    }
+
+    private void spawnGolem(String name, double x, double y, double z) {
+        cn.nukkit.entity.Entity golem = cn.nukkit.entity.Entity.createEntity(name, new cn.nukkit.level.Position(x, y, z, this.getLevel()));
+        if (golem != null) {
+            golem.setRotation(this.golemYaw, 0);
+            golem.spawnToAll();
+        }
     }
 
     @Override
