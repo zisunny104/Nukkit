@@ -419,6 +419,16 @@ public interface ItemID {
     int COPPER_CHESTPLATE = 755;
     int COPPER_LEGGINGS = 756;
     int COPPER_BOOTS = 757;
+    int WOODEN_SPEAR = 861;
+    int STONE_SPEAR = 860;
+    int COPPER_SPEAR = 855;
+    int IRON_SPEAR = 858;
+    int GOLDEN_SPEAR = 857;
+    int DIAMOND_SPEAR = 856;
+    int NETHERITE_SPEAR = 859;
+    int RECORD_TEARS = 836;
+    int RECORD_LAVA_CHICKEN = 837;
+    int RECORD_BOUNCE = 838;
     //
     int GLOW_ITEM_FRAME = 850;
     int PALE_OAK_DOOR = 851;
