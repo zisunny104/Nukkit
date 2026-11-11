@@ -16,7 +16,7 @@ public class ItemIronSpear extends ItemTool {
 
     @Override
     public int getMaxDurability() {
-        return ItemTool.DURABILITY_IRON;
+        return 250;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class ItemIronSpear extends ItemTool {
     @Override
     public int getAttackDamage() {
         return 3;
+    }
+
+    @Override
+    public int getEnchantAbility() {
+        return 14;
     }
 }

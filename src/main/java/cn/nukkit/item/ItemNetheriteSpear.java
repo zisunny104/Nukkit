@@ -16,7 +16,7 @@ public class ItemNetheriteSpear extends ItemTool {
 
     @Override
     public int getMaxDurability() {
-        return ItemTool.DURABILITY_NETHERITE;
+        return 2030;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class ItemNetheriteSpear extends ItemTool {
     @Override
     public int getAttackDamage() {
         return 5;
+    }
+
+    @Override
+    public int getEnchantAbility() {
+        return 15;
     }
 }
