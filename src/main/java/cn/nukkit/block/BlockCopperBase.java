@@ -5,10 +5,14 @@ import cn.nukkit.block.properties.OxidizationLevel;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTool;
 
-public abstract class BlockCopperBase extends BlockSolid implements Oxidizable, Waxable {
+public abstract class BlockCopperBase extends BlockSolidMeta implements Oxidizable, Waxable {
 
     public BlockCopperBase() {
-        // Does nothing
+        this(0);
+    }
+
+    public BlockCopperBase(int meta) {
+        super(meta);
     }
 
     @Override
@@ -62,7 +66,7 @@ public abstract class BlockCopperBase extends BlockSolid implements Oxidizable, 
         if (this.getOxidizationLevel().equals(oxidizationLevel)) {
             return true;
         }
-        return this.level.setBlock(this, Block.get(this.getCopperId(this.isWaxed(), oxidizationLevel)));
+        return this.level.setBlock(this, Block.get(this.getCopperId(this.isWaxed(), oxidizationLevel), this.getDamage()));
     }
 
     @Override
@@ -70,7 +74,7 @@ public abstract class BlockCopperBase extends BlockSolid implements Oxidizable, 
         if (this.isWaxed() == waxed) {
             return true;
         }
-        return this.level.setBlock(this, Block.get(getCopperId(waxed, getOxidizationLevel())));
+        return this.level.setBlock(this, Block.get(getCopperId(waxed, getOxidizationLevel()), this.getDamage()));
     }
 
     @Override
