@@ -3,6 +3,7 @@ package cn.nukkit;
 import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.block.*;
 import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntityCrafter;
 import cn.nukkit.blockentity.BlockEntityItemFrame;
 import cn.nukkit.blockentity.BlockEntityLectern;
 import cn.nukkit.blockentity.BlockEntitySpawnable;
@@ -3826,6 +3827,23 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     this.chat(chatMessage);
                 }
                 return;
+            case ProtocolInfo.__INTERNAL__TOGGLE_CRAFTER_SLOT_REQUEST_PACKET:
+                ToggleCrafterSlotRequestPacket toggleCrafterSlotPacket = (ToggleCrafterSlotRequestPacket) packet;
+
+                if (!this.spawned || !this.isAlive()) {
+                    return;
+                }
+
+                if (this.distanceSquared(new Vector3(toggleCrafterSlotPacket.x + 0.5, toggleCrafterSlotPacket.y + 0.5, toggleCrafterSlotPacket.z + 0.5)) > 64) {
+                    return;
+                }
+
+                BlockEntity crafterEntity = this.level.getBlockEntity(new Vector3(toggleCrafterSlotPacket.x, toggleCrafterSlotPacket.y, toggleCrafterSlotPacket.z));
+                if (crafterEntity instanceof BlockEntityCrafter) {
+                    ((BlockEntityCrafter) crafterEntity).setSlotDisabled(toggleCrafterSlotPacket.slot, toggleCrafterSlotPacket.disabled);
+                    this.level.addLevelSoundEvent(crafterEntity, LevelSoundEventPacket.SOUND_CRAFTER_DISABLE_SLOT);
+                }
+                break;
             case ProtocolInfo.CONTAINER_CLOSE_PACKET:
                 ContainerClosePacket containerClosePacket = (ContainerClosePacket) packet;
 
