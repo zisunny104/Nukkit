@@ -53,6 +53,6 @@ public class EntityDonkey extends EntityHorseBase {
             }
         }
 
-        return drops.toArray(new Item[0]);
+        return this.addGearDrops(drops);
     }
 }
