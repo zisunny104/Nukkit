@@ -58,7 +58,7 @@ public class BlockPumpkin extends BlockSolidMeta implements Faceable {
         this.setBlockFace(player != null ? player.getDirection().getOpposite() : BlockFace.SOUTH);
         this.getLevel().setBlock(block, this, true, true);
         if (this.getId() == CARVED_PUMPKIN || this.getId() == LIT_PUMPKIN) {
-            this.trySpawnGolem();
+            this.trySpawnGolem(player);
         }
         return true;
     }
@@ -67,7 +67,8 @@ public class BlockPumpkin extends BlockSolidMeta implements Faceable {
      * Build a golem when the head is placed: snow golem (2 snow blocks), iron golem (T of 4 iron blocks),
      * copper golem (1 copper block; carved pumpkin only).
      */
-    protected void trySpawnGolem() {
+    protected void trySpawnGolem(Player player) {
+        this.golemYaw = player != null ? player.getYaw() : 0;
         int x = this.getFloorX();
         int y = this.getFloorY();
         int z = this.getFloorZ();
@@ -93,10 +94,16 @@ public class BlockPumpkin extends BlockSolidMeta implements Faceable {
             }
         }
 
-        if (this.getId() == CARVED_PUMPKIN && level.getBlockIdAt(x, y - 1, z) == COPPER_BLOCK) {
+        if (this.getId() == CARVED_PUMPKIN && isCopperBlock(level.getBlockIdAt(x, y - 1, z))) {
             this.clearGolemBlocks(x, y, z, 0, -1, 0);
             this.spawnGolem("CopperGolem", x + 0.5, y - 1, z + 0.5);
         }
+    }
+
+    private double golemYaw;
+
+    private static boolean isCopperBlock(int id) {
+        return id >= COPPER_BLOCK && id <= WAXED_WEATHERED_COPPER || id == WAXED_OXIDIZED_COPPER;
     }
 
     private void clearGolemBlocks(int x, int y, int z, int... offsets) {
@@ -110,6 +117,7 @@ public class BlockPumpkin extends BlockSolidMeta implements Faceable {
     private void spawnGolem(String name, double x, double y, double z) {
         cn.nukkit.entity.Entity golem = cn.nukkit.entity.Entity.createEntity(name, new cn.nukkit.level.Position(x, y, z, this.getLevel()));
         if (golem != null) {
+            golem.setRotation(this.golemYaw, 0);
             golem.spawnToAll();
         }
     }
