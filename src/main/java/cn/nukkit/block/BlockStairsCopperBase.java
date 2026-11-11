@@ -43,6 +43,7 @@ public abstract class BlockStairsCopperBase extends BlockStairs implements Waxab
 
     @Override
     public int onUpdate(int type) {
+        super.onUpdate(type);
         return Oxidizable.super.onUpdate(type);
     }
 
@@ -66,7 +67,7 @@ public abstract class BlockStairsCopperBase extends BlockStairs implements Waxab
         if (this.getOxidizationLevel().equals(oxidizationLevel)) {
             return true;
         }
-        return this.level.setBlock(this, Block.get(this.getCopperId(this.isWaxed(), oxidizationLevel)));
+        return this.level.setBlock(this, Block.get(this.getCopperId(this.isWaxed(), oxidizationLevel), this.getDamage()));
     }
 
     @Override
@@ -74,7 +75,7 @@ public abstract class BlockStairsCopperBase extends BlockStairs implements Waxab
         if (this.isWaxed() == waxed) {
             return true;
         }
-        return this.level.setBlock(this, Block.get(getCopperId(waxed, getOxidizationLevel())));
+        return this.level.setBlock(this, Block.get(getCopperId(waxed, getOxidizationLevel()), this.getDamage()));
     }
 
     @Override
