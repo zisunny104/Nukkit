@@ -852,6 +852,38 @@ public class BlockTypes {
     public static final BlockType YELLOW_POPLAR_LEAVES = register("minecraft:yellow_poplar_leaves", BlockID.YELLOW_POPLAR_LEAVES);
     public static final BlockType ORANGE_POPLAR_LEAVES = register("minecraft:orange_poplar_leaves", BlockID.ORANGE_POPLAR_LEAVES);
     public static final BlockType RED_POPLAR_LEAVES = register("minecraft:red_poplar_leaves", BlockID.RED_POPLAR_LEAVES);
+    public static final BlockType CINNABAR = register("minecraft:cinnabar", BlockID.CINNABAR);
+    public static final BlockType POLISHED_CINNABAR = register("minecraft:polished_cinnabar", BlockID.POLISHED_CINNABAR);
+    public static final BlockType CINNABAR_SLAB = register("minecraft:cinnabar_slab", BlockID.CINNABAR_SLAB);
+    public static final BlockType POLISHED_CINNABAR_SLAB = register("minecraft:polished_cinnabar_slab", BlockID.POLISHED_CINNABAR_SLAB);
+    public static final BlockType CINNABAR_DOUBLE_SLAB = register("minecraft:cinnabar_double_slab", BlockID.CINNABAR_DOUBLE_SLAB);
+    public static final BlockType POLISHED_CINNABAR_DOUBLE_SLAB = register("minecraft:polished_cinnabar_double_slab", BlockID.POLISHED_CINNABAR_DOUBLE_SLAB);
+    public static final BlockType CINNABAR_STAIRS = register("minecraft:cinnabar_stairs", BlockID.CINNABAR_STAIRS);
+    public static final BlockType POLISHED_CINNABAR_STAIRS = register("minecraft:polished_cinnabar_stairs", BlockID.POLISHED_CINNABAR_STAIRS);
+    public static final BlockType CINNABAR_WALL = register("minecraft:cinnabar_wall", BlockID.CINNABAR_WALL);
+    public static final BlockType POLISHED_CINNABAR_WALL = register("minecraft:polished_cinnabar_wall", BlockID.POLISHED_CINNABAR_WALL);
+    public static final BlockType CINNABAR_BRICKS = register("minecraft:cinnabar_bricks", BlockID.CINNABAR_BRICKS);
+    public static final BlockType CINNABAR_BRICK_SLAB = register("minecraft:cinnabar_brick_slab", BlockID.CINNABAR_BRICK_SLAB);
+    public static final BlockType CINNABAR_BRICK_DOUBLE_SLAB = register("minecraft:cinnabar_brick_double_slab", BlockID.CINNABAR_BRICK_DOUBLE_SLAB);
+    public static final BlockType CINNABAR_BRICK_STAIRS = register("minecraft:cinnabar_brick_stairs", BlockID.CINNABAR_BRICK_STAIRS);
+    public static final BlockType CINNABAR_BRICK_WALL = register("minecraft:cinnabar_brick_wall", BlockID.CINNABAR_BRICK_WALL);
+    public static final BlockType CHISELED_CINNABAR = register("minecraft:chiseled_cinnabar", BlockID.CHISELED_CINNABAR);
+    public static final BlockType SULFUR = register("minecraft:sulfur", BlockID.SULFUR);
+    public static final BlockType POLISHED_SULFUR = register("minecraft:polished_sulfur", BlockID.POLISHED_SULFUR);
+    public static final BlockType SULFUR_SLAB = register("minecraft:sulfur_slab", BlockID.SULFUR_SLAB);
+    public static final BlockType POLISHED_SULFUR_SLAB = register("minecraft:polished_sulfur_slab", BlockID.POLISHED_SULFUR_SLAB);
+    public static final BlockType SULFUR_DOUBLE_SLAB = register("minecraft:sulfur_double_slab", BlockID.SULFUR_DOUBLE_SLAB);
+    public static final BlockType POLISHED_SULFUR_DOUBLE_SLAB = register("minecraft:polished_sulfur_double_slab", BlockID.POLISHED_SULFUR_DOUBLE_SLAB);
+    public static final BlockType SULFUR_STAIRS = register("minecraft:sulfur_stairs", BlockID.SULFUR_STAIRS);
+    public static final BlockType POLISHED_SULFUR_STAIRS = register("minecraft:polished_sulfur_stairs", BlockID.POLISHED_SULFUR_STAIRS);
+    public static final BlockType SULFUR_WALL = register("minecraft:sulfur_wall", BlockID.SULFUR_WALL);
+    public static final BlockType POLISHED_SULFUR_WALL = register("minecraft:polished_sulfur_wall", BlockID.POLISHED_SULFUR_WALL);
+    public static final BlockType SULFUR_BRICKS = register("minecraft:sulfur_bricks", BlockID.SULFUR_BRICKS);
+    public static final BlockType SULFUR_BRICK_SLAB = register("minecraft:sulfur_brick_slab", BlockID.SULFUR_BRICK_SLAB);
+    public static final BlockType SULFUR_BRICK_DOUBLE_SLAB = register("minecraft:sulfur_brick_double_slab", BlockID.SULFUR_BRICK_DOUBLE_SLAB);
+    public static final BlockType SULFUR_BRICK_STAIRS = register("minecraft:sulfur_brick_stairs", BlockID.SULFUR_BRICK_STAIRS);
+    public static final BlockType SULFUR_BRICK_WALL = register("minecraft:sulfur_brick_wall", BlockID.SULFUR_BRICK_WALL);
+    public static final BlockType CHISELED_SULFUR = register("minecraft:chiseled_sulfur", BlockID.CHISELED_SULFUR);
 
     private static BlockType register(String identifier, int legacyId) {
         return register(new BlockTypeImpl(identifier, legacyId));
