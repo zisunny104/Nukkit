@@ -2,6 +2,8 @@ package cn.nukkit.block;
 
 import cn.nukkit.Player;
 import cn.nukkit.block.properties.OxidizationLevel;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.item.Item;
 
 /**
@@ -38,7 +40,22 @@ public interface CopperFamily extends Oxidizable, Waxable {
     @Override
     default boolean setOxidizationLevel(OxidizationLevel level) {
         Block self = (Block) this;
-        return level == this.getOxidizationLevel() || self.getLevel().setBlock(self, this.getStateWithOxidizationLevel(level));
+        return level == this.getOxidizationLevel() || this.replaceKeepingBlockEntity(this.getStateWithOxidizationLevel(level));
+    }
+
+    /**
+     * The client drops the block entity of a block that is replaced, so a statue lost its pose until the chunk was sent again.
+     */
+    private boolean replaceKeepingBlockEntity(Block replacement) {
+        Block self = (Block) this;
+        if (!self.getLevel().setBlock(self, replacement)) {
+            return false;
+        }
+        cn.nukkit.blockentity.BlockEntity blockEntity = self.getLevel().getBlockEntity(self);
+        if (blockEntity instanceof BlockEntitySpawnable) {
+            ((BlockEntitySpawnable) blockEntity).spawnToAll();
+        }
+        return true;
     }
 
     @Override
@@ -46,9 +63,8 @@ public interface CopperFamily extends Oxidizable, Waxable {
         if (waxed == this.isWaxed()) {
             return true;
         }
-        Block self = (Block) this;
         int index = this.indexInFamily() % 4 + (waxed ? 4 : 0);
-        return self.getLevel().setBlock(self, Block.get(this.getFamilyIds()[index], this.getDamage()));
+        return this.replaceKeepingBlockEntity(Block.get(this.getFamilyIds()[index], this.getDamage()));
     }
 
     private int indexInFamily() {
