@@ -7,7 +7,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 /**
  * Holds the pose of a copper golem statue and the golem it turns back into, the layout follows the official server.
  */
-public class BlockEntityCopperGolemStatue extends BlockEntity {
+public class BlockEntityCopperGolemStatue extends BlockEntitySpawnable {
 
     public BlockEntityCopperGolemStatue(FullChunk chunk, CompoundTag nbt) {
         super(chunk, nbt);
@@ -24,6 +24,16 @@ public class BlockEntityCopperGolemStatue extends BlockEntity {
                     .putCompound("SaveData", new CompoundTag()));
         }
         super.initBlockEntity();
+    }
+
+    @Override
+    public CompoundTag getSpawnCompound() {
+        return new CompoundTag()
+                .putString("id", BlockEntity.COPPER_GOLEM_STATUE)
+                .putInt("x", (int) this.x)
+                .putInt("y", (int) this.y)
+                .putInt("z", (int) this.z)
+                .putInt("Pose", this.namedTag.getInt("Pose"));
     }
 
     @Override
