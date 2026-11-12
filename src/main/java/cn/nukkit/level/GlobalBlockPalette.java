@@ -6,6 +6,7 @@ import cn.nukkit.block.custom.properties.BlockProperties;
 import cn.nukkit.block.properties.VanillaProperties;
 import cn.nukkit.block.properties.WallConnectionType;
 import cn.nukkit.level.format.leveldb.LevelDBConstants;
+import cn.nukkit.level.format.leveldb.NukkitLegacyMapper;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.network.protocol.ProtocolInfo;
@@ -13,8 +14,12 @@ import cn.nukkit.utils.Utils;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import org.cloudburstmc.nbt.NbtMap;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.NoSuchElementException;
 
 @Log4j2
@@ -91,9 +96,69 @@ public class GlobalBlockPalette {
         }
     }
 
+    private static String stateKey(String name, Map<String, ?> states) {
+        StringBuilder key = new StringBuilder(name);
+        new TreeMap<String, Object>(states).forEach((k, v) -> key.append('|').append(k).append('=').append(v));
+        return key.toString();
+    }
+
+    /**
+     * Some entries of the shipped LevelDB table point at a runtime id that belongs to another block (the placeholder
+     * block of the table, or a block that had the same legacy id in an older version), so the block was saved and
+     * loaded as that other block. Such an entry is moved to the palette state of its own name and properties, or
+     * dropped when the palette has none.
+     */
+    private static int resolveLeveldbRuntimeId(CompoundTag state, List<NbtMap> palette, Map<String, Integer> byKey) {
+        int runtimeId = state.getInt("runtimeId");
+        String name = state.getString("name");
+        if (runtimeId >= 0 && runtimeId < palette.size() && name.equals(palette.get(runtimeId).getString("name"))) {
+            return runtimeId;
+        }
+        Map<String, Object> states = state.getCompound("states").parseValue();
+        Integer exact = byKey.get(stateKey(name, states));
+        if (exact != null) {
+            return exact;
+        }
+        // The entry may leave out properties that the palette has (the stripped bit of a wood block): take the first state that agrees on the rest.
+        for (int i = 0; i < palette.size(); i++) {
+            NbtMap candidate = palette.get(i);
+            if (!name.equals(candidate.getString("name"))) {
+                continue;
+            }
+            NbtMap candidateStates = candidate.getCompound("states");
+            boolean same = true;
+            for (Map.Entry<String, Object> entry : states.entrySet()) {
+                if (!String.valueOf(entry.getValue()).equals(String.valueOf(candidateStates.get(entry.getKey())))) {
+                    same = false;
+                    break;
+                }
+            }
+            if (same) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private static void loadBlockStates(ListTag<CompoundTag> blockStates, BlockPalette blockPalette) {
         List<CompoundTag> stateOverloads = new ObjectArrayList<>();
+        List<NbtMap> palette = null;
+        Map<String, Integer> byKey = null;
+        if (blockPalette == getLeveldbBlockPalette()) {
+            palette = NukkitLegacyMapper.loadBlockPalette();
+            byKey = new HashMap<>();
+            for (int i = 0; i < palette.size(); i++) {
+                byKey.putIfAbsent(stateKey(palette.get(i).getString("name"), palette.get(i).getCompound("states")), i);
+            }
+        }
         for (CompoundTag state : blockStates.getAll()) {
+            if (palette != null) {
+                int resolved = resolveLeveldbRuntimeId(state, palette, byKey);
+                if (resolved == -1) {
+                    continue;
+                }
+                state.putInt("runtimeId", resolved);
+            }
             if (!registerBlockState(blockPalette, state, false)) {
                 stateOverloads.add(state);
             }
