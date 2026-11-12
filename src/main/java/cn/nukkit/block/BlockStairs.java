@@ -77,25 +77,31 @@ public abstract class BlockStairs extends BlockSolidMeta implements Faceable {
         return 0;
     }
 
-    private BlockStairs stairsAt(BlockFace side) {
-        Block b = this.getSide(side);
-        return b instanceof BlockStairs && ((b.getDamage() & 0x04) == (this.getDamage() & 0x04)) ? (BlockStairs) b : null;
+    private static BlockStairs stairsAt(java.util.function.Function<BlockFace, Block> sides, int half, BlockFace side) {
+        Block b = sides.apply(side);
+        return b instanceof BlockStairs && ((b.getDamage() & 0x04) == half) ? (BlockStairs) b : null;
     }
 
     /** Same rules as the official corner states (confirmed by the BDS capture of a pinwheel of four stairs). */
     public int computeCorner() {
+        return this.computeCorner(side -> this.getSide(side));
+    }
+
+    /** @param sides gives the block next to this one, so that a chunk that is not part of a loaded level yet can be worked out */
+    public int computeCorner(java.util.function.Function<BlockFace, Block> sides) {
+        int half = this.getDamage() & 0x04;
         BlockFace facing = this.getHighSide();
-        BlockStairs front = this.stairsAt(facing);
+        BlockStairs front = stairsAt(sides, half, facing);
         if (front != null) {
             BlockFace f2 = front.getHighSide();
-            if (f2.getAxis() != facing.getAxis() && !this.sameStairsAt(f2.getOpposite(), facing)) {
+            if (f2.getAxis() != facing.getAxis() && !sameStairsAt(sides, half, f2.getOpposite(), facing)) {
                 return f2 == facing.rotateYCCW() ? 3 : 4;
             }
         }
-        BlockStairs back = this.stairsAt(facing.getOpposite());
+        BlockStairs back = stairsAt(sides, half, facing.getOpposite());
         if (back != null) {
             BlockFace f2 = back.getHighSide();
-            if (f2.getAxis() != facing.getAxis() && !this.sameStairsAt(f2, facing)) {
+            if (f2.getAxis() != facing.getAxis() && !sameStairsAt(sides, half, f2, facing)) {
                 return f2 == facing.rotateYCCW() ? 1 : 2;
             }
         }
@@ -103,8 +109,8 @@ public abstract class BlockStairs extends BlockSolidMeta implements Faceable {
     }
 
     /** True when the block at side is a stairs of the same half and with the given high side. */
-    private boolean sameStairsAt(BlockFace side, BlockFace highSide) {
-        BlockStairs s = this.stairsAt(side);
+    private static boolean sameStairsAt(java.util.function.Function<BlockFace, Block> sides, int half, BlockFace side, BlockFace highSide) {
+        BlockStairs s = stairsAt(sides, half, side);
         return s != null && s.getHighSide() == highSide;
     }
 
