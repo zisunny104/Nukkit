@@ -63,6 +63,10 @@ public class GlobalBlockPalette {
                         ? properties.setValue(0, BlockWall.WALL_TYPE.getName(), BlockWall.WallType.values()[type])
                         : 0;
                 int runtimeId = blockPalette.getRuntimeId(id, typeMeta);
+                // A palette that has the wall as a single entry followed by other blocks (the LevelDB palette for the newer
+                // walls) has no room for the derived states: they all use the default state and the blocks after it keep theirs.
+                int next = blockPalette.getLegacyFullId(runtimeId + 1);
+                boolean room = next == -1 || (next >> Block.DATA_BITS) == id;
 
                 for (WallConnectionType west : connections) {
                     int westMeta = properties.setValue(typeMeta, VanillaProperties.WALL_CONNECTION_TYPE_WEST.getName(), west);
@@ -72,9 +76,14 @@ public class GlobalBlockPalette {
                             int eastMeta = properties.setValue(southMeta, VanillaProperties.WALL_CONNECTION_TYPE_EAST.getName(), east);
                             for (WallConnectionType north : connections) {
                                 int northMeta = properties.setValue(eastMeta, VanillaProperties.WALL_CONNECTION_TYPE_NORTH.getName(), north);
-                                blockPalette.registerState(id, northMeta, runtimeId++, true);
-                                blockPalette.registerState(id,
-                                        properties.setBooleanValue(northMeta, VanillaProperties.WALL_POST.getName(), true), runtimeId++, true);
+                                int postMeta = properties.setBooleanValue(northMeta, VanillaProperties.WALL_POST.getName(), true);
+                                if (room) {
+                                    blockPalette.registerState(id, northMeta, runtimeId++, true);
+                                    blockPalette.registerState(id, postMeta, runtimeId++, true);
+                                } else {
+                                    blockPalette.registerState(id, northMeta, runtimeId, false);
+                                    blockPalette.registerState(id, postMeta, runtimeId, false);
+                                }
                             }
                         }
                     }
