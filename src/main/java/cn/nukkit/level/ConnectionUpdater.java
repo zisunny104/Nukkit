@@ -1,6 +1,7 @@
 package cn.nukkit.level;
 
 import cn.nukkit.block.Block;
+import cn.nukkit.block.BlockStairs;
 import cn.nukkit.block.BlockWall;
 import cn.nukkit.block.ConnectionBlock;
 import cn.nukkit.level.format.ChunkSection;
@@ -29,7 +30,7 @@ public final class ConnectionUpdater {
             return false;
         }
         Block prototype = Block.getPrototype(id, 0);
-        return prototype instanceof ConnectionBlock || prototype instanceof BlockWall;
+        return prototype instanceof ConnectionBlock || prototype instanceof BlockWall || prototype instanceof BlockStairs;
     }
 
     /**
@@ -124,6 +125,14 @@ public final class ConnectionUpdater {
                                     face -> getBlock(level, lookup, chunk, worldX + face.getXOffset(), worldY + face.getYOffset(), worldZ + face.getZOffset()))) {
                                 continue;
                             }
+                        } else if (block instanceof BlockStairs) {
+                            BlockStairs stairs = (BlockStairs) block;
+                            int meta = (stairs.getDamage() & ~BlockStairs.CORNER_MASK)
+                                    | (stairs.computeCorner(face -> getBlock(level, lookup, chunk, worldX + face.getXOffset(), worldY + face.getYOffset(), worldZ + face.getZOffset())) << BlockStairs.CORNER_SHIFT);
+                            if (meta == stairs.getDamage()) {
+                                continue;
+                            }
+                            stairs.setDamage(meta);
                         } else {
                             ConnectionBlock connectionBlock = (ConnectionBlock) block;
                             int connections = getConnections(lookup, chunk, connectionBlock, worldX, worldY, worldZ);
