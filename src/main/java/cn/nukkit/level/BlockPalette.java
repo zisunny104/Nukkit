@@ -23,6 +23,8 @@ public class BlockPalette {
     private final Int2IntMap runtimeIdToLegacy = new Int2IntOpenHashMap();
     private final Map<CompoundTag, Integer> stateToLegacy = new HashMap<>();
     private final Int2ObjectMap<CompoundTag> legacyToState = new Int2ObjectOpenHashMap<>();
+    // legacy ids by the position in the sorted vanilla palette, only filled when the runtime ids were remapped to network hashes
+    private final Int2IntMap sequentialToLegacy = new Int2IntOpenHashMap();
     private volatile boolean locked;
 
     public BlockPalette(int protocol) {
@@ -61,6 +63,47 @@ public class BlockPalette {
         } else {
             this.runtimeIdToLegacy.putIfAbsent(runtimeId, legacyId);
         }
+    }
+
+    /**
+     * Replaces the sequential runtime ids by the network ids of the vanilla palette (the hash of each block state),
+     * which the client uses when the start game packet says that block ids are hashed.
+     *
+     * @param networkIds the network id for every sequential runtime id
+     */
+    public void remapRuntimeIds(int[] networkIds) {
+        if (this.locked) {
+            throw new IllegalStateException("Block palette is already locked!");
+        }
+
+        this.sequentialToLegacy.putAll(this.runtimeIdToLegacy);
+        this.sequentialToLegacy.defaultReturnValue(-1);
+
+        Int2IntMap remappedLegacyToRuntime = new Int2IntOpenHashMap();
+        remappedLegacyToRuntime.defaultReturnValue(-1);
+        for (Int2IntMap.Entry entry : this.legacyToRuntimeId.int2IntEntrySet()) {
+            int sequential = entry.getIntValue();
+            remappedLegacyToRuntime.put(entry.getIntKey(), sequential >= 0 && sequential < networkIds.length ? networkIds[sequential] : sequential);
+        }
+
+        Int2IntMap remappedRuntimeToLegacy = new Int2IntOpenHashMap();
+        remappedRuntimeToLegacy.defaultReturnValue(-1);
+        for (Int2IntMap.Entry entry : this.runtimeIdToLegacy.int2IntEntrySet()) {
+            int sequential = entry.getIntKey();
+            remappedRuntimeToLegacy.put(sequential >= 0 && sequential < networkIds.length ? networkIds[sequential] : sequential, entry.getIntValue());
+        }
+
+        this.legacyToRuntimeId.clear();
+        this.legacyToRuntimeId.putAll(remappedLegacyToRuntime);
+        this.runtimeIdToLegacy.clear();
+        this.runtimeIdToLegacy.putAll(remappedRuntimeToLegacy);
+    }
+
+    /**
+     * @param sequentialId the position of the state in the sorted vanilla palette, as stored in the item json files
+     */
+    public int getLegacyFullIdBySequentialId(int sequentialId) {
+        return this.sequentialToLegacy.isEmpty() ? this.getLegacyFullId(sequentialId) : this.sequentialToLegacy.get(sequentialId);
     }
 
     public void lock() {

@@ -484,7 +484,7 @@ public class BinaryStream {
 
         Block block = isBlock && id != Item.AIR ? item.getBlockUnsafe() : null;
         int blockRuntimeId = block == null ? 0 : GlobalBlockPalette.getOrCreateRuntimeId(block.getId(), block.getDamage());
-        this.putUnsignedVarInt(blockRuntimeId);
+        this.putUnsignedVarInt(blockRuntimeId & 0xffffffffL);
 
         if (id == Item.AIR) {
             this.putUnsignedVarInt(0); // No user date
