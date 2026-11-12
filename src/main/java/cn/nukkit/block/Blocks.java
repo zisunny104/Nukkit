@@ -454,6 +454,8 @@ class Blocks {
         //
         list[COPPER_ORE] = BlockOreCopper.class; //566
         list[LIGHTNING_ROD] = BlockLightningRod.class; //567
+        list[VAULT] = BlockVault.class; //569
+        list[TRIAL_SPAWNER] = BlockTrialSpawner.class; //570
         //
         list[CAMERA_BLOCK] = BlockCamera.class; //242
         list[217] = BlockStructureVoid.class;
