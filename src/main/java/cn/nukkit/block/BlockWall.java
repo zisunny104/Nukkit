@@ -10,7 +10,10 @@ import cn.nukkit.block.properties.WallConnectionType;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.level.BlockPalette;
+import cn.nukkit.level.GlobalBlockPalette;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.format.leveldb.LevelDBProvider;
 import cn.nukkit.level.format.anvil.Anvil;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
@@ -233,6 +236,20 @@ public class BlockWall extends BlockTransparentMeta implements BlockPropertiesHe
         return this.getDamage() != previousMeta;
     }
 
+    /**
+     * The LevelDB palette has no room for the connection states of some walls, they all come back as the default state.
+     * Writing such a state again and again would update the neighbours without end, so it is only written when it
+     * comes back from the palette unchanged.
+     */
+    protected boolean survivesStorage() {
+        if (this.level == null || !(this.level.getProvider() instanceof LevelDBProvider)) {
+            return true;
+        }
+        BlockPalette palette = GlobalBlockPalette.getLeveldbBlockPalette();
+        int runtimeId = palette.getRuntimeId(this.getId(), this.getDamage());
+        return palette.getLegacyFullId(runtimeId) == ((this.getId() << Block.DATA_BITS) | this.getDamage());
+    }
+
     protected boolean canStoreConnections() {
         return this.level == null || !(this.level.getProvider() instanceof Anvil);
     }
@@ -246,7 +263,7 @@ public class BlockWall extends BlockTransparentMeta implements BlockPropertiesHe
     @Override
     public int onUpdate(int type) {
         if (type == Level.BLOCK_UPDATE_NORMAL) {
-            if (this.autoConfigureState()) {
+            if (this.autoConfigureState() && this.survivesStorage()) {
                 this.level.setBlock(this, this, true, true);
             }
             return type;
