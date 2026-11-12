@@ -159,6 +159,10 @@ public class BlockStateMapping {
         if (shift >= 0 && ((data >> shift) & ConnectionBlock.CONNECTION_MASK) != 0) {
             return this.getConnectedState(state, legacyId, data);
         }
+        // Walls and stairs: when the palette cannot tell this data apart (it comes back as another one), keep the data in memory too
+        if (this.legacyMapper.runtimeToFullId(runtimeId) != (legacyId << Block.DATA_BITS | data)) {
+            return this.getConnectedState(state, legacyId, data);
+        }
         return state;
     }
 
