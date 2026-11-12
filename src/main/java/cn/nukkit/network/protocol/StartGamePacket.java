@@ -215,7 +215,7 @@ public class StartGamePacket extends DataPacket {
         this.putLLong(0); // blockRegistryChecksum
         this.put(EMPTY_UUID); // worldTemplateId
         this.putBoolean(this.clientSideGenerationEnabled);
-        this.putBoolean(true); // blockIdsAreHashed
+        this.putBoolean(false); // blockIdsAreHashed
         /* NetworkPermissions start */
         this.putBoolean(true); // isServerAuthSounds
         /* NetworkPermissions end */

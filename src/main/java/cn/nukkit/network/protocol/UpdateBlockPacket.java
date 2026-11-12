@@ -41,7 +41,7 @@ public class UpdateBlockPacket extends DataPacket {
     public void encode() {
         this.reset();
         this.putBlockVector3(x, y, z);
-        this.putUnsignedVarInt(blockRuntimeId & 0xffffffffL);
+        this.putUnsignedVarInt(blockRuntimeId);
         this.putUnsignedVarInt(flags);
         this.putUnsignedVarInt(dataLayer);
     }

@@ -129,36 +129,7 @@ public class GlobalBlockPalette {
         registerWallStates(blockPalette);
         registerConnectionStates(blockPalette, blockPalette == getCurrentBlockPalette());
 
-        if (blockPalette == getCurrentBlockPalette()) {
-            remapToNetworkIds(blockPalette);
-        }
-
         blockPalette.lock(); // prevent adding new states
-    }
-
-    /**
-     * The client sorts its blocks by name hash, so a plain position in the palette only matches while the client and the
-     * server know exactly the same blocks. The start game packet therefore announces hashed ids and every state gets the
-     * network id (the hash of its state) of the vanilla palette it sits at.
-     */
-    private static void remapToNetworkIds(BlockPalette blockPalette) {
-        try (java.io.InputStream in = GlobalBlockPalette.class.getClassLoader().getResourceAsStream("block_network_ids.bin")) {
-            if (in == null) {
-                throw new IllegalStateException("block_network_ids.bin is missing");
-            }
-            java.nio.ByteBuffer buffer = java.nio.ByteBuffer.wrap(in.readAllBytes());
-            int[] networkIds = new int[buffer.remaining() / 4];
-            for (int i = 0; i < networkIds.length; i++) {
-                networkIds[i] = buffer.getInt();
-            }
-            blockPalette.remapRuntimeIds(networkIds);
-        } catch (java.io.IOException e) {
-            throw new IllegalStateException("Unable to read block_network_ids.bin", e);
-        }
-    }
-
-    public static int getLegacyFullIdBySequentialId(int sequentialId) {
-        return getCurrentBlockPalette().getLegacyFullIdBySequentialId(sequentialId);
     }
 
     private static boolean registerBlockState(BlockPalette blockPalette, CompoundTag state, boolean force) {

@@ -33,7 +33,7 @@ public class PunchBlockParticle extends Particle {
         packet.x = (float) this.x;
         packet.y = (float) this.y;
         packet.z = (float) this.z;
-        packet.data = GlobalBlockPalette.getOrCreateRuntimeId(blockId, blockDamage);
+        packet.data = GlobalBlockPalette.getOrCreateRuntimeId(blockId, blockDamage) | index;
         packet.tryEncode();
         return new DataPacket[]{packet};
     }

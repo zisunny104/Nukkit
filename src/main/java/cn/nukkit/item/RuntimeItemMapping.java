@@ -164,7 +164,7 @@ public class RuntimeItemMapping {
         } else if (json.has("blockRuntimeId")) {
             int runtimeId = json.get("blockRuntimeId").getAsInt();
             if (runtimeId != 0) {
-                int fullId = GlobalBlockPalette.getLegacyFullIdBySequentialId(runtimeId);
+                int fullId = GlobalBlockPalette.getLegacyFullId(runtimeId);
                 if (fullId == -1) {
                     if (ignoreUnknown) {
                         return null;
