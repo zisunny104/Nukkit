@@ -6,8 +6,8 @@ import cn.nukkit.event.player.PlayerCreationEvent;
 import cn.nukkit.event.server.QueryRegenerateEvent;
 import cn.nukkit.network.protocol.DataPacket;
 import cn.nukkit.network.protocol.ProtocolInfo;
-import cn.nukkit.network.session.NetworkPlayerSession;
 import cn.nukkit.network.session.NetherNetPlayerSession;
+import cn.nukkit.network.session.NetworkPlayerSession;
 import com.google.common.base.Strings;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
@@ -20,10 +20,14 @@ import lombok.extern.log4j.Log4j2;
 import org.cloudburstmc.netty.channel.nethernet.NetherNetChannelFactory;
 import org.cloudburstmc.netty.channel.nethernet.NetherNetConstants;
 import org.cloudburstmc.netty.channel.nethernet.config.NetherChannelOption;
+import org.cloudburstmc.netty.channel.nethernet.signaling.JoinRefusal;
 import org.cloudburstmc.netty.channel.nethernet.signaling.NetherNetHTTPServerSignaling;
 import org.cloudburstmc.netty.channel.nethernet.signaling.PongData;
+import org.cloudburstmc.netty.util.nethernet.Identity;
 import org.cloudburstmc.netty.util.nethernet.NetherNetLogging;
 import org.cloudburstmc.netty.util.nethernet.OperatorIdentity;
+import org.cloudburstmc.netty.util.nethernet.TokenTrust;
+import org.jose4j.jwt.JwtClaims;
 import org.jose4j.lang.JoseException;
 import tel.schich.libdatachannel.LibDataChannelArchDetect;
 import tel.schich.libdatachannel.PeerConnectionConfiguration;
@@ -36,13 +40,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.security.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author MagicDroidX
@@ -59,12 +69,14 @@ public class NetherNetInterface implements AdvancedSourceInterface {
     @Setter
     private Network network;
     private final Server server;
+    private final NetherNetAddressBlocks addressBlocks = new NetherNetAddressBlocks();
 
     private final Map<InetSocketAddress, NetherNetPlayerSession> sessions = new HashMap<>();
     private final Queue<NetherNetPlayerSession> sessionCreationQueue = PlatformDependent.newMpscQueue();
 
     public NetherNetInterface(Server server) {
         this.server = server;
+        this.network = server.getNetwork();
 
         try {
             LibDataChannelArchDetect.initialize();
@@ -74,17 +86,27 @@ public class NetherNetInterface implements AdvancedSourceInterface {
             String advertisedAddressesString = server.getPropertyString("advertised-addresses", "");
             Set<String> advertisedAddresses = advertisedAddressesString.isBlank() ? null : new HashSet<>(Arrays.asList(advertisedAddressesString.split(",")));
 
-            OperatorIdentity identity;
             File identityFile = new File("nethernet-identity.p12");
-            if (!identityFile.exists()) {
-                server.getLogger().warning("Persistent nethernet-identity.p12 does not exist. New identity will be generated on every startup.");
-                identity = OperatorIdentity.generate("Nukkit");
-            } else {
-                identity = fromKeystore(identityFile, server.getPropertyString("nethernet-identity-password", "nethernet"));
-            }
+            OperatorIdentity identity = identityFile.isFile()
+                    ? fromKeystore(identityFile, server.getPropertyString("nethernet-identity-password", "nethernet"))
+                    : OperatorIdentity.fromPemOrCreate(new File("identity.pem"), "Nukkit");
 
             NetherNetHTTPServerSignaling.Builder signallingBuilder = new NetherNetHTTPServerSignaling.Builder()
                     .setIceOnLocalPort(false)
+                    .setTokenTrust(new TokenTrust() {
+                        @Override
+                        public JwtClaims claims(Identity identity) throws Exception {
+                            return (server.xboxAuth ? TokenTrust.MINECRAFT_AUTH : TokenTrust.ANY).claims(identity);
+                        }
+
+                        @Override
+                        public void prepare() {
+                            if (server.xboxAuth) {
+                                TokenTrust.MINECRAFT_AUTH.prepare();
+                            }
+                        }
+                    })
+                    .setPlayerFilter((host, player) -> this.addressBlocks.isBlocked(player.remoteAddress()) ? JoinRefusal.REJECTED : null)
                     .setMaxConnectionsPerAddress(server.getPropertyInt("connections-per-address", 8))
                     .setAdvertisedAddresses(advertisedAddresses)
                     .setIdentity(identity)
@@ -98,57 +120,77 @@ public class NetherNetInterface implements AdvancedSourceInterface {
                                 .setVersion(ProtocolInfo.MINECRAFT_VERSION_NETWORK)
                                 .setPlayerCount(info.getPlayerCount())
                                 .setMaxPlayerCount(info.getMaxPlayerCount())
+                                .setOnlineAuth(server.xboxAuth)
+                                .setSelfSignedAuth(!server.xboxAuth)
                                 .build();
                     });
 
-            // HTTPS signaling on the same port: players that connect by the certificate's name get no trust prompt
+            Path httpsConfig = Path.of("keystore.p12");
             String httpsCert = server.getPropertyString("nethernet-https-cert", "");
             String httpsKey = server.getPropertyString("nethernet-https-key", "");
-            if (!httpsCert.isBlank() && !httpsKey.isBlank()) {
+            boolean pem = !httpsCert.isBlank() && !httpsKey.isBlank();
+            boolean https = pem || Files.isRegularFile(httpsConfig);
+            if (pem) {
                 signallingBuilder.setHttpsPem(new File(httpsCert), new File(httpsKey));
-                log.info("NetherNet signaling serves HTTPS with the certificate {}", httpsCert);
+            } else if (https) {
+                signallingBuilder.setHttpsKeystore(httpsConfig.toFile(), server.getPropertyString("nethernet-keystore-password", ""));
             }
 
-            // Behind a reverse proxy the client address is read from X-Forwarded-For, but only from these proxies
             String trustedProxies = server.getPropertyString("nethernet-trusted-proxies", "");
             if (!trustedProxies.isBlank()) {
                 signallingBuilder.setForwardedForProxies(Arrays.asList(trustedProxies.split(",")));
             }
-
             this.netherNetSignaling = signallingBuilder.build();
 
             this.eventLoopGroup = new NioEventLoopGroup();
 
             String address = Strings.isNullOrEmpty(server.getIp()) ? "0.0.0.0" : server.getIp();
             int webrtcPort = server.getPropertyInt("webrtc-port", server.getPort());
+            if (webrtcPort < 0 || webrtcPort > 65535) {
+                throw new IllegalArgumentException("webrtc-port must be between 0 and 65535");
+            }
             int webrtcMtu = server.getPropertyInt("webrtc-mtu", PeerConnectionConfiguration.AUTO_MTU);
 
             PeerConnectionConfiguration webrtcConfig = PeerConnectionConfiguration.DEFAULT
                     .withMaxMessageSize(NetherNetConstants.MAX_ADVERTISED_MESSAGE_SIZE)
-                    .withBindAddress(InetAddress.getByName(address))
-                    .withEnableIceUdpMux(true)
-                    .withMtu(webrtcMtu)
-                    .withPortRangeBegin((short) webrtcPort)
-                    .withPortRangeEnd((short) webrtcPort);
+                    .withMtu(webrtcMtu);
 
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(eventLoopGroup)
                     .channelFactory(NetherNetChannelFactory.server(this.netherNetSignaling))
                     .option(NetherChannelOption.NETHER_PEER_CONNECTION_CONFIG, webrtcConfig)
+                    .option(NetherChannelOption.NETHER_SERVER_ICE_ADDRESS, new InetSocketAddress(address, webrtcPort))
                     .childHandler(new ChannelInitializer<>() {
                         @Override
                         protected void initChannel(Channel channel) {
                             NetherNetPlayerSession nukkitSession = new NetherNetPlayerSession(NetherNetInterface.this, channel);
+                            channel.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                                @Override
+                                public void channelActive(ChannelHandlerContext context) {
+                                    if (NetherNetInterface.this.addressBlocks.isBlocked((InetSocketAddress) channel.remoteAddress())) {
+                                        context.close();
+                                        return;
+                                    }
+
+                                    NetherNetInterface.this.sessionCreationQueue.offer(nukkitSession);
+                                    context.fireChannelActive();
+                                }
+                            });
                             channel.pipeline().addLast("nukkit-handler", nukkitSession);
-                            NetherNetInterface.this.sessionCreationQueue.offer(nukkitSession);
                         }
                     });
 
-            this.netherNetChannel = bootstrap.bind(new InetSocketAddress(address, server.getPort())).sync().channel();
+            ChannelFuture bind = bootstrap.bind(new InetSocketAddress(address, server.getPort()));
+            this.netherNetChannel = bind.channel();
+            bind.sync();
 
-            server.getLogger().info("NetherNet signaling started on " + (httpsCert.isBlank() || httpsKey.isBlank() ? "http" : "https") + "://" + address + ":" + server.getPort() + " (WebRTC on port " + webrtcPort + "/udp)");
-        } catch (Exception e) {
-            server.getLogger().error("Failed to start NetherNet", e);
+            server.getLogger().info("NetherNet signaling started on " + (https ? "https://" : "http://") + address + ":" + server.getPort() + " (WebRTC on port " + webrtcPort + "/udp)");
+        } catch (Exception | LinkageError failure) {
+            this.shutdown();
+            if (failure instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            throw new IllegalStateException("Failed to start NetherNet", failure);
         }
     }
 
@@ -160,6 +202,10 @@ public class NetherNetInterface implements AdvancedSourceInterface {
 
             try {
                 address = (InetSocketAddress) session.getChannel().remoteAddress();
+                if (!session.getChannel().isOpen() || session.getDisconnectReason() != null || this.addressBlocks.isBlocked(address)) {
+                    session.disconnect("Connection refused");
+                    continue;
+                }
 
                 PlayerCreationEvent event = new PlayerCreationEvent(this, Player.class, Player.class, null, address);
                 this.server.getPluginManager().callEvent(event);
@@ -219,9 +265,18 @@ public class NetherNetInterface implements AdvancedSourceInterface {
 
     @Override
     public void shutdown() {
-        this.sessions.values().forEach(session -> session.disconnect("Shutdown"));
-        if (this.netherNetSignaling != null) {
-            this.netherNetSignaling.close();
+        try {
+            if (this.netherNetChannel != null) {
+                this.netherNetChannel.close().awaitUninterruptibly();
+            } else if (this.netherNetSignaling != null) {
+                this.netherNetSignaling.close();
+            }
+        } finally {
+            if (this.eventLoopGroup != null) {
+                this.eventLoopGroup.shutdownGracefully(0, 2, TimeUnit.SECONDS).awaitUninterruptibly();
+            }
+            this.sessionCreationQueue.clear();
+            this.sessions.clear();
         }
     }
 
@@ -232,17 +287,17 @@ public class NetherNetInterface implements AdvancedSourceInterface {
 
     @Override
     public void blockAddress(InetSocketAddress address) {
-
+        this.addressBlocks.block(address, TimeUnit.DAYS.toSeconds(100));
     }
 
     @Override
     public void blockAddress(InetSocketAddress address, int timeout) {
-
+        this.addressBlocks.block(address, timeout);
     }
 
     @Override
     public void unblockAddress(InetSocketAddress address) {
-
+        this.addressBlocks.unblock(address);
     }
 
     @Override
@@ -274,8 +329,7 @@ public class NetherNetInterface implements AdvancedSourceInterface {
         }
         return null;
     }
-
-    // Form previous version of the lib, to load our existing keystore.p12
+    // Preserve the configured PKCS12 operator identity across upgrades.
     private static OperatorIdentity fromKeystore(File keystore, String password) throws GeneralSecurityException, IOException, JoseException {
         char[] pwd = password.toCharArray();
 
