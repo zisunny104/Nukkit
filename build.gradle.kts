@@ -59,6 +59,7 @@ dependencies {
     annotationProcessor(libs.lombok)
 
     testImplementation(libs.bundles.junit)
+    testImplementation("org.mockito:mockito-core:5.15.2")
     testCompileOnly(libs.lombok)
     testAnnotationProcessor(libs.lombok)
 }

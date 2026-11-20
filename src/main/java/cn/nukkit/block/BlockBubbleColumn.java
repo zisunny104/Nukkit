@@ -116,6 +116,12 @@ public class BlockBubbleColumn extends BlockTransparentMeta {
                 return type;
             }
 
+            // Natural formation replaces the primary water block without calling place().
+            // Keep water in the secondary layer for rendering and repair existing columns on update.
+            if (!(this.getLevelBlock(Block.LAYER_WATERLOGGED) instanceof BlockWater)) {
+                this.getLevel().setBlock(this, Block.LAYER_WATERLOGGED, Block.get(STILL_WATER), true, false);
+            }
+
             Block up = this.up();
             if (up instanceof BlockWater && (up.getDamage() == 0 || up.getDamage() == 8)) {
                 BlockFormEvent event = new BlockFormEvent(up, Block.get(BUBBLE_COLUMN, this.getDamage()));

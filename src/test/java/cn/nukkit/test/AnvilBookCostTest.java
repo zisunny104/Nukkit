@@ -13,7 +13,7 @@ class AnvilBookCostTest {
     @Test
     void applyingBooksChargesForResultLevelIncludingExistingStrongerEnchantments() throws Exception {
         Block.init();
-        RuntimeItems.init();
+        if (RuntimeItems.getMapping() == null) RuntimeItems.init();
         Item.init();
         Enchantment.init();
         for (int[] levels : new int[][]{{0, 1, 1, 0, Enchantment.ID_DURABILITY}, {0, 3, 3, 0, Enchantment.ID_DURABILITY}, {1, 1, 2, 0, Enchantment.ID_DURABILITY}, {3, 1, 3, 0, Enchantment.ID_DURABILITY}, {3, 3, 3, 0, Enchantment.ID_DURABILITY}, {0, 1, 1, 750, Enchantment.ID_MENDING}, {1, 1, 1, 750, Enchantment.ID_MENDING}}) {

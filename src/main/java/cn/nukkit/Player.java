@@ -7148,18 +7148,15 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                     Item repaired = isOffhand ? offhand : this.inventory.getItem(itemToRepair);
                     if (repaired instanceof ItemDurable) {
                         if (repaired.getDamage() > 0) {
-                            int dmg = repaired.getDamage() - (exp << 1); // repair 2 points per xp
-                            if (dmg < 0) {
-                                dmg = 0;
-                            }
-
-                            repaired.setDamage(dmg);
+                            int restored = (int) Math.min(repaired.getDamage(), (long) exp * 2);
+                            repaired.setDamage(repaired.getDamage() - restored);
 
                             if (isOffhand) {
                                 this.getOffhandInventory().setItem(0, repaired);
                             } else {
                                 this.inventory.setItem(itemToRepair, repaired);
                             }
+                            this.addExperience(exp - (int) (((long) restored + 1) / 2));
                             return true;
                         }
                     }
