@@ -281,7 +281,7 @@ public class RepairItemTransaction extends InventoryTransaction {
                             rarityFactor = Math.max(1, rarityFactor / 2);
                         }
 
-                        cost += rarityFactor * Math.max(0, outputLevel - inputLevel);
+                        cost += rarityFactor * outputLevel;
                         if (this.inputItem.getCount() > 1) {
                             cost = 40;
                         }
