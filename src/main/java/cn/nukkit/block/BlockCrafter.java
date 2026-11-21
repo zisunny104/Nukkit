@@ -242,7 +242,8 @@ public class BlockCrafter extends BlockSolidMeta {
         }
 
         CraftingRecipe recipe = inputs.isEmpty() ? null : this.level.getServer().getCraftingManager().matchRecipeByInputs(inputs);
-        if (recipe == null) {
+        Item result = recipe == null ? null : recipe.getFinalResult(inputs);
+        if (result == null) {
             this.level.addLevelSoundEvent(this, LevelSoundEventPacket.SOUND_CRAFTER_FAILED);
             return;
         }
@@ -253,7 +254,7 @@ public class BlockCrafter extends BlockSolidMeta {
             inv.setItem(slot, item.getCount() > 0 ? item : Item.get(Item.AIR));
         }
 
-        this.output(recipe.getResult().clone());
+        this.output(result.clone());
         for (Item extra : recipe.getExtraResults()) {
             if (!extra.isNull()) {
                 this.output(extra.clone());

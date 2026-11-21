@@ -92,7 +92,7 @@ public class CraftingTransaction extends InventoryTransaction {
         this.recipe = source.getServer().getCraftingManager().matchRecipe(inputs, this.primaryOutput, this.secondaryOutputs);
         boolean valid = this.recipe != null && super.canExecute();
 
-        if (valid && primaryOutput != null && primaryOutput.hasCompoundTag() && !recipe.getResult().hasCompoundTag()) {
+        if (valid && primaryOutput != null && primaryOutput.hasCompoundTag() && !recipe.getFinalResult(inputs).hasCompoundTag()) {
             if (Nukkit.DEBUG > 1) {
                 MainLogger.getLogger().debug("CraftingTransaction did not expect nbt for " + recipe.getResult());
             }

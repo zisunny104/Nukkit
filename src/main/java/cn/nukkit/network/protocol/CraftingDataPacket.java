@@ -111,6 +111,7 @@ public class CraftingDataPacket extends DataPacket {
         for (Recipe recipe : shapelessData) {
             switch (recipe.getType()) {
                 case SHAPELESS:
+                case SHULKER_BOX:
                     ShapelessRecipe shapeless = (ShapelessRecipe) recipe;
                     this.putString(shapeless.getRecipeId());
                     List<Item> ingredients = shapeless.getIngredientList();

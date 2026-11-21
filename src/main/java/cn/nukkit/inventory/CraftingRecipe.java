@@ -24,6 +24,11 @@ public interface CraftingRecipe extends Recipe {
 
     int getPriority();
 
+    /** Resolve output data from the consumed inputs without mutating them. */
+    default Item getFinalResult(List<Item> inputs) {
+        return getResult();
+    }
+
     /**
      * Returns whether the specified list of crafting grid inputs and outputs matches this recipe. Outputs DO NOT
      * include the primary result item.

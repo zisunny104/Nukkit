@@ -76,6 +76,7 @@ public class CraftingManager {
             try {
                 switch (Utils.toInt(recipe.get("type"))) {
                     case 0: // shapeless
+                    case 5: // data-preserving shapeless (bundles, shulker boxes, harnesses and cushions)
                         String smeltingBlock = (String) recipe.get("block");
                         if (!"crafting_table".equals(smeltingBlock) && !"stonecutter".equals(smeltingBlock) && !"furnace".equals(smeltingBlock) && !"blast_furnace".equals(smeltingBlock) && !"smoker".equals(smeltingBlock) && !"campfire".equals(smeltingBlock)) {
                             continue;
@@ -128,6 +129,7 @@ public class CraftingManager {
                                 sorted.add(inputItem);
                             }
 
+                            Item dataSource = sorted.isEmpty() ? null : sorted.get(0).clone();
                             sorted.sort(recipeComparator);
 
                             int priority = (int) recipe.getOrDefault("priority", 0);
@@ -153,7 +155,11 @@ public class CraftingManager {
                                     this.registerRecipe(new CampfireRecipe(outputItem, sorted.get(0)));
                                     continue;
                                 default:
-                                    this.registerRecipe(new ShapelessRecipe((String) recipe.get("id"), priority, outputItem, sorted));
+                                    if (Utils.toInt(recipe.get("type")) == 5) {
+                                        this.registerRecipe(new DataShapelessRecipe((String) recipe.get("id"), priority, outputItem, sorted, dataSource));
+                                    } else {
+                                        this.registerRecipe(new ShapelessRecipe((String) recipe.get("id"), priority, outputItem, sorted));
+                                    }
                             }
 
                             // Inject recipes for flight duration 2 and 3 fireworks
@@ -690,11 +696,11 @@ public class CraftingManager {
             inputList.sort(recipeComparator);
             UUID inputHash = getMultiItemHash(inputList);
             ShapedRecipe recipe = shapedRecipeMap.get(inputHash);
-            if (recipe != null && (recipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList))) {
+            if (recipe != null && matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList)) {
                 return recipe;
             }
             for (ShapedRecipe shapedRecipe : shapedRecipeMap.values()) {
-                if (shapedRecipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(shapedRecipe, inputList, primaryOutput, extraOutputList)) {
+                if (matchItemsAccumulation(shapedRecipe, inputList, primaryOutput, extraOutputList)) {
                     return shapedRecipe;
                 }
             }
@@ -706,11 +712,11 @@ public class CraftingManager {
             inputList.sort(recipeComparator);
             UUID inputHash = getMultiItemHash(inputList);
             ShapelessRecipe recipe = shapelessRecipeMap.get(inputHash);
-            if (recipe != null && (recipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList))) {
+            if (recipe != null && matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList)) {
                 return recipe;
             }
             for (ShapelessRecipe shapelessRecipe : shapelessRecipeMap.values()) {
-                if (shapelessRecipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(shapelessRecipe, inputList, primaryOutput, extraOutputList)) {
+                if (matchItemsAccumulation(shapelessRecipe, inputList, primaryOutput, extraOutputList)) {
                     return shapelessRecipe;
                 }
             }
@@ -733,6 +739,7 @@ public class CraftingManager {
         }
         for (Map<UUID, ShapelessRecipe> recipes : this.shapelessRecipes.values()) {
             for (ShapelessRecipe recipe : recipes.values()) {
+                if (recipe instanceof StonecutterRecipe) continue;
                 if (recipe.matchItems(new ArrayList<>(inputList), new ArrayList<>(recipe.getExtraResults()))) {
                     return recipe;
                 }
@@ -782,8 +789,8 @@ public class CraftingManager {
     }
 
     private static boolean matchItemsAccumulation(CraftingRecipe recipe, List<Item> inputList, Item primaryOutput, List<Item> extraOutputList) {
-        Item recipeResult = recipe.getResult();
-        if (primaryOutput.equals(recipeResult, recipeResult.hasMeta(), recipeResult.hasCompoundTag()) && primaryOutput.getCount() % recipeResult.getCount() == 0) {
+        Item recipeResult = recipe.getFinalResult(inputList);
+        if (recipeResult != null && primaryOutput.equals(recipeResult, recipeResult.hasMeta(), recipe instanceof DataShapelessRecipe || recipeResult.hasCompoundTag()) && primaryOutput.getCount() % recipeResult.getCount() == 0) {
             int multiplier = primaryOutput.getCount() / recipeResult.getCount();
             return recipe.matchItems(inputList, extraOutputList, multiplier);
         }
