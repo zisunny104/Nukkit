@@ -184,12 +184,6 @@ public class InventoryTransaction {
                     item.equals(((EnchantTransaction) this).materialItem));
         }
 
-        if (this instanceof SmithingTransaction) {
-            needItems.removeIf(item -> (item.getId() == Item.NETHERITE_UPGRADE_SMITHING_TEMPLATE || (item.getId() >= Item.COAST_ARMOR_TRIM_SMITHING_TEMPLATE &&
-                    item.getId() <= Item.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE)) && item.getDamage() == 0 && item.getCount() <= 1 &&
-                    item.equals(((SmithingTransaction) this).templateItem));
-        }
-
         boolean valid = needItems.isEmpty() && haveItems.isEmpty();
         if (!valid && Nukkit.DEBUG > 1) source.getServer().getLogger().debug("!matchItems " + needItems + " / " + haveItems);
         return valid;

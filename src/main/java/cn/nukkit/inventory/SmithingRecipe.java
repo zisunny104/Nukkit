@@ -25,16 +25,16 @@ public class SmithingRecipe extends ShapelessRecipe {
     public SmithingRecipe(String recipeId, int priority, Collection<Item> ingredients, Item result) {
         super(recipeId, priority, result, ingredients);
 
-        this.equipment = (Item) ingredients.toArray()[0];
-        this.ingredient = (Item) ingredients.toArray()[1];
+        this.equipment = ((Item) ingredients.toArray()[0]).clone();
+        this.ingredient = ((Item) ingredients.toArray()[1]).clone();
 
         if (ingredients.size() >= 3) {
-            this.template = (Item) ingredients.toArray()[2];
+            this.template = ((Item) ingredients.toArray()[2]).clone();
         } else {
             this.template = Item.get(0);
         }
 
-        this.result = result;
+        this.result = result.clone();
 
         ArrayList<Item> aggregation = new ArrayList<>(3);
 
@@ -62,7 +62,7 @@ public class SmithingRecipe extends ShapelessRecipe {
 
     @Override
     public Item getResult() {
-        return result;
+        return result.clone();
     }
 
     public Item getFinalResult(Item equip, Item template) {
@@ -105,15 +105,15 @@ public class SmithingRecipe extends ShapelessRecipe {
     }
 
     public Item getEquipment() {
-        return equipment;
+        return equipment.clone();
     }
 
     public Item getIngredient() {
-        return ingredient;
+        return ingredient.clone();
     }
 
     public Item getTemplate() {
-        return template;
+        return template.clone();
     }
 
     public List<Item> getIngredientsAggregate() {
