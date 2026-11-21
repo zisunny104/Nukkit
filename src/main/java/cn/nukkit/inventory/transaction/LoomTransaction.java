@@ -10,11 +10,20 @@ import cn.nukkit.inventory.transaction.action.LoomItemAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
+import cn.nukkit.item.ItemDye;
+import cn.nukkit.item.RuntimeItems;
 import cn.nukkit.nbt.tag.CompoundTag;
+import cn.nukkit.utils.BannerPattern;
 
 import java.util.List;
+import java.util.Map;
 
 public class LoomTransaction extends InventoryTransaction {
+
+    private static final Map<String, String> TEMPLATE_PATTERNS = Map.of(
+            "cre", "creeper", "sku", "skull", "flo", "flower", "moj", "mojang",
+            "bri", "field_masoned", "cbo", "bordure_indented", "pig", "piglin",
+            "glb", "globe", "flw", "flow", "gus", "guster");
 
     private Item outputItem;
 
@@ -59,21 +68,7 @@ public class LoomTransaction extends InventoryTransaction {
         LoomInventory loomInventory = (LoomInventory) inventory;
         Item banner = loomInventory.getBanner();
         Item dye = loomInventory.getDye();
-        if (banner.getId() != Item.BANNER || outputItem.getId() != Item.BANNER || dye.getId() != Item.DYE || banner.getDamage() != outputItem.getDamage()) {
-            return false;
-        }
-
-        if (!outputItem.hasCompoundTag()) {
-            return false;
-        }
-
-        int patternCount = outputItem.getNamedTag().getList("Patterns").size();
-        if (patternCount > 6) {
-            return false;
-        }
-
-        Item pattern = loomInventory.getPattern();
-        if (pattern.getId() != 0 && pattern.getId() != ItemID.BANNER_PATTERN) {
+        if (!validPatternAddition(banner, dye, loomInventory.getPattern(), outputItem)) {
             return false;
         }
 
@@ -88,8 +83,31 @@ public class LoomTransaction extends InventoryTransaction {
             return false;
         }
 
-        CompoundTag nbt = banner.getNamedTag();
-        return (nbt == null ? 0 : nbt.getList("Patterns").size()) + 1 == patternCount;
+        return true;
+    }
+
+    static boolean validPatternAddition(Item banner, Item dye, Item pattern, Item output) {
+        if (banner.getId() != Item.BANNER || output.getId() != Item.BANNER || output.getCount() != 1
+                || !(dye instanceof ItemDye color) || dye.getCount() < 1 || banner.getDamage() != output.getDamage()
+                || !output.hasCompoundTag()) return false;
+        int meta = dye.getDamage();
+        if (meta < 0 || meta > ItemDye.WHITE_NEW || meta == ItemDye.INK_SAC || meta == ItemDye.COCOA_BEANS
+                || meta == ItemDye.LAPIS_LAZULI || meta == ItemDye.BONE_MEAL) return false;
+        var oldPatterns = (banner.hasCompoundTag() ? banner.getNamedTag() : new CompoundTag()).getList("Patterns", CompoundTag.class);
+        var newPatterns = output.getNamedTag().getList("Patterns", CompoundTag.class);
+        CompoundTag originalData = banner.hasCompoundTag() ? banner.getNamedTag().clone() : new CompoundTag();
+        if (!originalData.remove("Patterns").equals(output.getNamedTag().clone().remove("Patterns"))) return false;
+        if (newPatterns.size() > 6 || newPatterns.size() != oldPatterns.size() + 1) return false;
+        for (int i = 0; i < oldPatterns.size(); i++) {
+            if (!oldPatterns.get(i).equals(newPatterns.get(i))) return false;
+        }
+        CompoundTag added = newPatterns.get(newPatterns.size() - 1);
+        String code = added.getString("Pattern");
+        if (BannerPattern.Type.getByName(code) == null || added.getInt("Color") != color.getDyeColor().getDyeData()) return false;
+        String required = TEMPLATE_PATTERNS.get(code);
+        if (required == null) return pattern.isNull();
+        var mapping = RuntimeItems.getMapping().fromIdentifier("minecraft:" + required + "_banner_pattern");
+        return mapping != null && pattern.getId() == mapping.getLegacyId() && pattern.getDamage() == mapping.getDamage();
     }
 
     @Override

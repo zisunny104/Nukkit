@@ -88,6 +88,8 @@ public class BannerPattern {
         PATTERN_SKULL("sku"),
         PATTERN_FLOWER("flo"),
         PATTERN_MOJANG("moj"),
+        PATTERN_PIGLIN("pig"),
+        PATTERN_GLOBE("glb"),
         PATTERN_FLOW("flw"),
         PATTERN_GUSTER("gus");
 
