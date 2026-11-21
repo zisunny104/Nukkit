@@ -289,13 +289,13 @@ public class RepairItemTransaction extends InventoryTransaction {
                 }
 
                 Enchantment[] outputEnchantments = this.outputItem.getEnchantments();
-                if (hasIncompatibleEnchantments && !hasCompatibleEnchantments || enchantments.size() < outputEnchantments.length) {
+                if (hasIncompatibleEnchantments && !hasCompatibleEnchantments || enchantments.size() != outputEnchantments.length) {
                     source.getServer().getLogger().debug("failed: enchantments");
                     return false;
                 }
 
                 for (Enchantment enchantment : outputEnchantments) {
-                    if (enchantments.get(enchantment.getId()) != enchantment.getLevel()) {
+                    if (enchantments.remove(enchantment.getId()) != enchantment.getLevel()) {
                         source.getServer().getLogger().debug("failed: enchantment level");
                         return false;
                     }

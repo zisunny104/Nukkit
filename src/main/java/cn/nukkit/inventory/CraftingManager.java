@@ -77,7 +77,7 @@ public class CraftingManager {
                 switch (Utils.toInt(recipe.get("type"))) {
                     case 0: // shapeless
                         String smeltingBlock = (String) recipe.get("block");
-                        if (!"crafting_table".equals(smeltingBlock) && !"furnace".equals(smeltingBlock) && !"blast_furnace".equals(smeltingBlock) && !"smoker".equals(smeltingBlock) && !"campfire".equals(smeltingBlock)) {
+                        if (!"crafting_table".equals(smeltingBlock) && !"stonecutter".equals(smeltingBlock) && !"furnace".equals(smeltingBlock) && !"blast_furnace".equals(smeltingBlock) && !"smoker".equals(smeltingBlock) && !"campfire".equals(smeltingBlock)) {
                             continue;
                         }
 
@@ -132,6 +132,10 @@ public class CraftingManager {
 
                             int priority = (int) recipe.getOrDefault("priority", 0);
                             switch (smeltingBlock) {
+                                case "stonecutter":
+                                    if (sorted.size() != 1) throw new IllegalArgumentException("Expected single input");
+                                    this.registerRecipe(new StonecutterRecipe((String) recipe.get("id"), priority, outputItem, sorted.get(0)));
+                                    continue;
                                 case "furnace":
                                     if (sorted.size() != 1) throw new IllegalArgumentException("Expected single input");
                                     this.registerRecipe(new FurnaceRecipe((String) recipe.get("id"), outputItem, sorted.get(0)));

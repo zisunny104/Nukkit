@@ -121,7 +121,8 @@ public class CraftingDataPacket extends DataPacket {
                     this.putUnsignedVarInt(1); // Results length
                     this.putSlot(shapeless.getResult(), true);
                     this.putUUID(shapeless.getId());
-                    this.putString(CRAFTING_TAG_CRAFTING_TABLE);
+                    this.putString(shapeless instanceof StonecutterRecipe
+                            ? CRAFTING_TAG_STONECUTTER : CRAFTING_TAG_CRAFTING_TABLE);
                     this.putVarInt(shapeless.getPriority());
                     this.putBoolean(false); // No unlock requirement
                     this.putUnsignedVarInt(shapeless.getNetworkId());
