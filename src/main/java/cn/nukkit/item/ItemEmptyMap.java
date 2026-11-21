@@ -20,6 +20,14 @@ public class ItemEmptyMap extends Item {
         super(EMPTY_MAP, meta, count, "Empty Map");
     }
 
+    private ItemMap createMap(Player player) {
+        ItemMap map = (ItemMap) Item.get(Item.MAP, getDamage());
+        map.setMapOrigin(Math.floorDiv(player.getFloorX(), 128) * 128 + 64,
+                Math.floorDiv(player.getFloorZ(), 128) * 128 + 64, player.getLevel().getDimension());
+        map.initItem();
+        return map;
+    }
+
     @Override
     public boolean canBeActivated() {
         return true;
@@ -30,7 +38,7 @@ public class ItemEmptyMap extends Item {
         if (!player.isCreative()) {
             this.count--;
         }
-        player.getInventory().addItem(Item.get(Item.MAP));
+        player.getInventory().addItem(createMap(player));
         return true;
     }
 
@@ -39,7 +47,7 @@ public class ItemEmptyMap extends Item {
         if (!player.isCreative()) {
             this.count--;
         }
-        player.getInventory().addItem(Item.get(Item.MAP));
+        player.getInventory().addItem(createMap(player));
         return true;
     }
 }

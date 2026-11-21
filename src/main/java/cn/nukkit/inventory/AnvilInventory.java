@@ -21,7 +21,11 @@ public class AnvilInventory extends FakeBlockUIComponent {
     private int cost;
 
     public AnvilInventory(PlayerUIInventory playerUI, Position position) {
-        super(playerUI, InventoryType.ANVIL, 1, position);
+        this(playerUI, position, InventoryType.ANVIL, 1);
+    }
+
+    protected AnvilInventory(PlayerUIInventory playerUI, Position position, InventoryType type, int offset) {
+        super(playerUI, type, offset, position);
     }
 
     @Override

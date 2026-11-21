@@ -3994,8 +3994,17 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                             BufferedImage image = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
                             Graphics2D graphics = image.createGraphics();
 
-                            int worldX = (Math.floorDiv(this.getFloorX(), 128)) << 7;
-                            int worldZ = (Math.floorDiv(this.getFloorZ(), 128)) << 7;
+                            if (!map.hasMapOrigin()) {
+                                map.setMapOrigin(Math.floorDiv(this.getFloorX(), 128) * 128 + 64,
+                                        Math.floorDiv(this.getFloorZ(), 128) * 128 + 64, this.level.getDimension());
+                            }
+                            if (map.getNamedTag().getInt("map_dimension") != this.level.getDimension()) {
+                                graphics.dispose();
+                                return;
+                            }
+                            int pixelSize = 1 << map.getMapScale();
+                            int worldX = map.getNamedTag().getInt("map_center_x") - 64 * pixelSize;
+                            int worldZ = map.getNamedTag().getInt("map_center_z") - 64 * pixelSize;
                             for (int x = 0; x < 128; x++) {
                                 int avgY = 0;
                                 for (int y = -1; y < 128; y++) {
@@ -4003,14 +4012,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                         if (y == -1) {
                                             continue;
                                         }
-                                        graphics.setColor(colorizeMapColor(new SplittableRandom((((long) (worldZ + y) & 0x3ffffff) << 26) + ((long) (worldX + x) & 0x3ffffff)).nextBoolean() ? BlockColor.STONE_BLOCK_COLOR : BlockColor.DIRT_BLOCK_COLOR, 1));
+                                        graphics.setColor(colorizeMapColor(new SplittableRandom((((long) (worldZ + y * pixelSize) & 0x3ffffff) << 26) + ((long) (worldX + x * pixelSize) & 0x3ffffff)).nextBoolean() ? BlockColor.STONE_BLOCK_COLOR : BlockColor.DIRT_BLOCK_COLOR, 1));
                                     } else {
                                         if (y == -1) { // Hack: Make sure we have average world height for the first row
-                                            avgY = this.getLevel().getHighestBlockAt(worldX + x, worldZ, false);
+                                            avgY = this.getLevel().getHighestBlockAt(worldX + x * pixelSize, worldZ, false);
                                             continue;
                                         }
 
-                                        int worldY = this.getLevel().getHighestBlockAt(worldX + x, worldZ + y, false);
+                                        int worldY = this.getLevel().getHighestBlockAt(worldX + x * pixelSize, worldZ + y * pixelSize, false);
                                         double avgYDifference = (worldY - avgY) * 4 / 5 + ((x + y & 1) - 0.5) * 0.4; // 4d / 5d would provide more detail but is that better?
                                         int colorDepth = 1;
                                         if (avgYDifference > 0.6) {
@@ -4020,13 +4029,14 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
                                             colorDepth = 0;
                                         }
                                         avgY = worldY;
-                                        graphics.setColor(colorizeMapColor(this.getLevel().getMapColorAt(worldX + x, worldY, worldZ + y), colorDepth));
+                                        graphics.setColor(colorizeMapColor(this.getLevel().getMapColorAt(worldX + x * pixelSize, worldY, worldZ + y * pixelSize), colorDepth));
                                     }
 
                                     graphics.fillRect(x, y, x + 1, y + 1);
                                 }
                             }
 
+                            graphics.dispose();
                             map.setImage(image);
                             map.trySendImage(this);
                         } catch (Exception ex) {

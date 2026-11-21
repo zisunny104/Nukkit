@@ -29,6 +29,7 @@ public class RepairItemTransaction extends InventoryTransaction {
     private Item outputItem;
 
     private int cost;
+    private Item cartographyResult;
 
     public RepairItemTransaction(Player source, List<InventoryAction> actions) {
         super(source, actions);
@@ -94,6 +95,28 @@ public class RepairItemTransaction extends InventoryTransaction {
         }
 
         for (InventoryAction action : this.actions) {
+            if (!action.onPreExecute(this.source)) {
+                this.sendInventories();
+                return false;
+            }
+        }
+        if (cartographyResult != null) {
+            Item canonical = cartographyResult.clone();
+            if (canonical instanceof cn.nukkit.item.ItemMap && CartographyRecipe.needsNewIdentity(materialItem)) {
+                canonical.setNamedTag(canonical.getNamedTag().clone().remove("map_uuid").remove("map_name_index"));
+                canonical.initItem();
+            }
+            for (InventoryAction action : actions) {
+                Item target = action.getTargetItemUnsafe();
+                if (!target.isNull() && target.equals(this.outputItem, true, true)) {
+                    target.setCompoundTag(canonical.getCompoundTag().clone());
+                    target.setDamage(canonical.getDamage());
+                }
+            }
+            this.outputItem = canonical;
+        }
+
+        for (InventoryAction action : this.actions) {
             if (action.execute(this.source)) {
                 action.onExecuteSuccess(this.source);
             } else {
@@ -135,6 +158,7 @@ public class RepairItemTransaction extends InventoryTransaction {
         }
 
         this.hasExecuted = true;
+        if (this.cartographyResult != null) this.sendInventories();
         return true;
     }
 
@@ -182,11 +206,13 @@ public class RepairItemTransaction extends InventoryTransaction {
         int baseRepairCost = this.inputItem.getRepairCost();
 
         if (this.isMapRecipe()) {
-            if (!this.matchMapRecipe()) {
-                source.getServer().getLogger().debug("failed: map recipe");
-                return false;
+            this.cartographyResult = CartographyRecipe.result(this.inputItem, this.materialItem);
+            this.cost = 0;
+            if (this.cartographyResult == null && this.inputItem instanceof cn.nukkit.item.ItemMap map
+                    && this.materialItem.getId() == Item.PAPER && !map.hasMapOrigin()) {
+                this.source.sendMessage(this.source.getServer().getLanguage().translateString("nukkit.map.noOrigin"));
             }
-            baseRepairCost = 0;
+            return CartographyRecipe.matches(this.cartographyResult, this.outputItem);
         } else if (this.hasMaterial()) {
             baseRepairCost += this.materialItem.getRepairCost();
 
@@ -376,23 +402,7 @@ public class RepairItemTransaction extends InventoryTransaction {
 
     private boolean isMapRecipe() {
         return this.hasMaterial() && (this.inputItem.getId() == Item.MAP || this.inputItem.getId() == Item.EMPTY_MAP)
-                && (this.materialItem.getId() == Item.EMPTY_MAP || this.materialItem.getId() == Item.PAPER || this.materialItem.getId() == Item.COMPASS);
-    }
-
-    private boolean matchMapRecipe() {
-        if (this.inputItem.getId() == Item.EMPTY_MAP) {
-            return this.inputItem.getDamage() != 2 && this.materialItem.getId() == Item.COMPASS // locator
-                    && this.outputItem.getId() == Item.EMPTY_MAP && this.outputItem.getDamage() == 2 && this.outputItem.getCount() == 1;
-        } else if (this.inputItem.getId() == Item.MAP && this.outputItem.getDamage() == this.inputItem.getDamage()) {
-            if (this.materialItem.getId() == Item.COMPASS) { // locator
-                return this.inputItem.getDamage() != 2 && this.outputItem.getId() == Item.MAP && this.outputItem.getCount() == 1;
-            } else if (this.materialItem.getId() == Item.EMPTY_MAP) { // clone
-                return this.outputItem.getId() == Item.MAP && this.outputItem.getCount() == 2;
-            } else if (this.materialItem.getId() == Item.PAPER && this.materialItem.getCount() >= 8) { // zoom out
-                return this.inputItem.getDamage() < 3 && this.outputItem.getId() == Item.MAP && this.outputItem.getCount() == 1;
-            }
-        }
-        return false;
+                && (this.materialItem.getId() == Item.EMPTY_MAP || this.materialItem.getId() == Item.PAPER || this.materialItem.getId() == Item.COMPASS || this.materialItem.getId() == Item.GLASS_PANE);
     }
 
     private boolean matchRepairItem() {

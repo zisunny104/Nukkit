@@ -103,7 +103,12 @@ public class ItemMap extends Item {
         ClientboundMapItemDataPacket pk = new ClientboundMapItemDataPacket();
         pk.mapId = getMapId();
         pk.update = ClientboundMapItemDataPacket.TEXTURE_UPDATE;
-        pk.scale = 0;
+        pk.scale = (byte) getMapScale();
+        pk.isLocked = isMapLocked();
+        if (hasMapOrigin()) {
+            pk.dimensionId = (byte) getNamedTag().getInt("map_dimension");
+            pk.origin = new cn.nukkit.math.BlockVector3(getNamedTag().getInt("map_center_x"), 0, getNamedTag().getInt("map_center_z"));
+        }
         pk.width = 128;
         pk.height = 128;
         pk.offsetX = 0;
@@ -122,15 +127,38 @@ public class ItemMap extends Item {
 
     @Override
     public int getMaxStackSize() {
-        return 1; // TODO: 64 when map copying is implemented
+        return 64;
+    }
+
+    public int getMapScale() {
+        return hasCompoundTag() ? Math.max(0, Math.min(4, getNamedTag().getInt("map_scale"))) : 0;
+    }
+
+    public boolean isMapLocked() {
+        return hasCompoundTag() && getNamedTag().getBoolean("map_locked");
+    }
+
+    public boolean hasMapOrigin() {
+        return hasCompoundTag() && getNamedTag().contains("map_center_x") && getNamedTag().contains("map_center_z")
+                && getNamedTag().contains("map_dimension");
+    }
+
+    public void setMapOrigin(int centerX, int centerZ, int dimension) {
+        CompoundTag tag = getNamedTag();
+        if (tag == null) tag = new CompoundTag();
+        setNamedTag(tag.putInt("map_center_x", centerX).putInt("map_center_z", centerZ).putInt("map_dimension", dimension));
+    }
+
+    public void invalidateImage() {
+        this.image = null;
     }
 
     @Override
     public Item initItem() {
         CompoundTag compoundTag = this.getNamedTag();
         if (compoundTag == null || !compoundTag.contains("map_uuid")) {
-            CompoundTag tag = new CompoundTag();
-            mapCount++;
+            CompoundTag tag = compoundTag == null ? new CompoundTag() : compoundTag.clone();
+            mapCount = Math.max(mapCount + 1, System.currentTimeMillis());
             tag.putLong("map_uuid", mapCount);
             tag.putInt("map_name_index", (int) mapCount);
             this.setNamedTag(tag);

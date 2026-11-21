@@ -143,6 +143,12 @@ public class NetworkInventoryAction {
                             this.windowId = Player.ENCHANT_WINDOW_ID;
                             this.inventorySlot = 1;
                             break;
+                        case CartographyInventory.INPUT_UI_SLOT:
+                        case CartographyInventory.MATERIAL_UI_SLOT:
+                            if (!(player.getWindowById(Player.ANVIL_WINDOW_ID) instanceof CartographyInventory)) return null;
+                            this.windowId = Player.ANVIL_WINDOW_ID;
+                            this.inventorySlot -= CartographyInventory.INPUT_UI_SLOT;
+                            break;
                         case AnvilInventory.ANVIL_INPUT_UI_SLOT:
                             if (!(player.getWindowById(Player.ANVIL_WINDOW_ID) instanceof AnvilInventory)) {
                                 player.getServer().getLogger().debug(player.getName() + " does not have anvil window open");

@@ -1,9 +1,19 @@
 package cn.nukkit.block;
 
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.item.Item;
+import cn.nukkit.Player;
+import cn.nukkit.inventory.CartographyInventory;
 import cn.nukkit.utils.BlockColor;
 
 public class BlockCartographyTable extends BlockSolid {
+
+    @Override public boolean canBeActivated() { return true; }
+
+    @Override public boolean onActivate(Item item, Player player) {
+        if (player != null) player.addWindow(new CartographyInventory(player.getUIInventory(), this), Player.ANVIL_WINDOW_ID);
+        return true;
+    }
 
     @Override
     public String getName() {

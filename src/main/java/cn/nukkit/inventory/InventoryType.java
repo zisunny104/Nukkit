@@ -38,6 +38,7 @@ public enum InventoryType {
     SMITHING_TABLE(3, "Smithing Table", 33),
     LECTERN(0, "Lectern", 25),
     GRINDSTONE(3, "Grindstone", 26),
+    CARTOGRAPHY(3, "Cartography", 30),
     CRAFTER(9, "Crafter", 36); //9 CONTAINER
 
     private final int size;
